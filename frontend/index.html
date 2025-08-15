@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線點位編輯工具</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>路線點位編輯工具</h1>
+        <div class="controls">
+            <label for="route-selector">選擇路線：</label>
+            <select id="route-selector">
+            </select>
+        </div>
+        <div class="route-options">
+            <button id="show-route-a" class="active">路線 A</button>
+            <button id="show-route-b">路線 B</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="map"></div>
+        <div id="point-list-container">
+            <h2>點位列表</h2>
+            
+            <!-- 新增操作按鈕區域 -->
+            <div class="point-operations">
+                <button id="add-point" class="btn-primary">➕ 新增點位</button>
+                <button id="delete-point" class="btn-danger" disabled>🗑️ 刪除選中點位</button>
+                <div class="modification-status" id="modification-status"></div>
+            </div>
+            
+            <table id="point-table" class="display">
+                <thead>
+                    <tr>
+                        <th>選擇</th>
+                        <th>順序</th>
+                        <th>緯度</th>
+                        <th>經度</th>
+                        <th>海拔（約）</th>
+                        <th>類型</th>
+                        <th>名稱</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="save-txt">📥 下載修改後的檔案</button>
+        </div>
+    </main>
+
+    <!-- 新增點位的彈出視窗 -->
+    <div id="add-point-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增點位</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="add-point-form">
+                <div class="form-group">
+                    <label for="point-type">點位類型：</label>
+                    <select id="point-type" required>
+                        <option value="gpx">GPX 軌跡點</option>
+                        <option value="comm">通訊點</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="point-name">點位名稱：</label>
+                    <input type="text" id="point-name" placeholder="通訊點名稱（選填）">
+                </div>
+                
+                <div class="form-group">
+                    <label for="point-lat">緯度：</label>
+                    <input type="number" id="point-lat" step="0.000001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="point-lng">經度：</label>
+                    <input type="number" id="point-lng" step="0.000001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="point-elevation">海拔：</label>
+                    <input type="number" id="point-elevation" placeholder="海拔高度（公尺）">
+                </div>
+                
+
+                
+                <div class="form-group">
+                    <label for="point-order">插入位置：</label>
+                    <select id="point-order" required>
+                        <option value="start">路線起點</option>
+                        <option value="end">路線終點</option>
+                        <option value="custom">自訂位置</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">新增點位</button>
+                    <button type="button" onclick="closeModal()" class="btn-secondary">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 確認刪除的彈出視窗 -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>確認刪除</h3>
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>確定要刪除選中的點位嗎？此操作無法復原。</p>
+                <div id="delete-points-list"></div>
+            </div>
+            <div class="form-actions">
+                <button id="confirm-delete" class="btn-danger">確認刪除</button>
+                <button onclick="closeDeleteModal()" class="btn-secondary">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
