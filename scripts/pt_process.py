@@ -295,10 +295,9 @@ def export_gdf_to_txt_geojson(
     # 建立 GeoJSON
     geojson = {"type": "FeatureCollection", "features": []}
 
-    # 線段 Feature - 只包含 GPX 點
-    gpx_points = gdf[gdf["point_type"] == "gpx"]
-    if len(gpx_points) > 1:
-        coords = [(row.longitude, row.latitude) for _, row in gpx_points.iterrows()]
+    # 線段 Feature - 包含所有點（按順序排列）
+    if len(gdf) > 1:
+        coords = [(row.longitude, row.latitude) for _, row in gdf.iterrows()]
         geojson["features"].append(
             {
                 "type": "Feature",
