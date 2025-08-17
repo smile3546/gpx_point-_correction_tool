@@ -43,14 +43,6 @@
         <ele>3000.7</ele>
         <time>2021-09-06T02:19:19Z</time>
       </trkpt>
-      <trkpt lat="22.62707" lon="120.761374">
-        <ele>3000.7</ele>
-        <time>2021-09-06T02:19:19Z</time>
-      </trkpt>
-      <trkpt lat="22.627056" lon="120.76139">
-        <ele>3008.0</ele>
-        <time>2021-09-06T02:28:44Z</time>
-      </trkpt>
       <trkpt lat="22.624434" lon="120.759903">
         <ele>2967.5</ele>
         <time>2021-09-06T02:33:52Z</time>
@@ -80,7 +72,7 @@
         <time>2021-09-06T02:49:43Z</time>
       </trkpt>
       <trkpt lat="22.619105" lon="120.756017">
-        <ele>2927.0</ele>
+        <ele>2927</ele>
         <time>2021-09-06T02:51:26Z</time>
       </trkpt>
       <trkpt lat="22.617997" lon="120.7553">
@@ -160,7 +152,7 @@
         <time>2021-09-06T03:36:43Z</time>
       </trkpt>
       <trkpt lat="22.614877" lon="120.750921">
-        <ele>2675.0</ele>
+        <ele>2675</ele>
         <time>2021-09-06T03:39:17Z</time>
       </trkpt>
       <trkpt lat="22.614586" lon="120.749825">
@@ -228,11 +220,11 @@
         <time>2021-09-06T04:16:02Z</time>
       </trkpt>
       <trkpt lat="22.613034" lon="120.743446">
-        <ele>2310.0</ele>
+        <ele>2310</ele>
         <time>2021-09-06T04:18:35Z</time>
       </trkpt>
       <trkpt lat="22.613059" lon="120.743093">
-        <ele>2293.0</ele>
+        <ele>2293</ele>
         <time>2021-09-06T04:20:18Z</time>
       </trkpt>
       <trkpt lat="22.613325" lon="120.742896">
@@ -244,7 +236,7 @@
         <time>2021-09-06T04:22:52Z</time>
       </trkpt>
       <trkpt lat="22.61368" lon="120.742493">
-        <ele>2254.0</ele>
+        <ele>2254</ele>
         <time>2021-09-06T04:24:34Z</time>
       </trkpt>
       <trkpt lat="22.614531" lon="120.742248">
@@ -380,11 +372,11 @@
         <time>2021-09-06T23:04:28Z</time>
       </trkpt>
       <trkpt lat="22.617617" lon="120.72868">
-        <ele>1767.0</ele>
+        <ele>1767</ele>
         <time>2021-09-06T23:08:32Z</time>
       </trkpt>
       <trkpt lat="22.616964" lon="120.727771">
-        <ele>1777.0</ele>
+        <ele>1777</ele>
         <time>2021-09-06T23:10:58Z</time>
       </trkpt>
       <trkpt lat="22.616889" lon="120.727424">
@@ -500,7 +492,7 @@
         <time>2021-09-07T00:01:41Z</time>
       </trkpt>
       <trkpt lat="22.624406" lon="120.716172">
-        <ele>1559.0</ele>
+        <ele>1559</ele>
         <time>2021-09-07T00:02:57Z</time>
       </trkpt>
       <trkpt lat="22.624235" lon="120.715995">
@@ -512,7 +504,7 @@
         <time>2021-09-07T00:04:52Z</time>
       </trkpt>
       <trkpt lat="22.62455" lon="120.715505">
-        <ele>1539.0</ele>
+        <ele>1539</ele>
         <time>2021-09-07T00:05:30Z</time>
       </trkpt>
       <trkpt lat="22.624673" lon="120.715292">
@@ -544,7 +536,7 @@
         <time>2021-09-07T00:14:23Z</time>
       </trkpt>
       <trkpt lat="22.623984" lon="120.713167">
-        <ele>1498.0</ele>
+        <ele>1498</ele>
         <time>2021-09-07T00:16:17Z</time>
       </trkpt>
       <trkpt lat="22.6238" lon="120.712741">
@@ -560,7 +552,7 @@
         <time>2021-09-07T00:24:32Z</time>
       </trkpt>
       <trkpt lat="22.624925" lon="120.710606">
-        <ele>1487.0</ele>
+        <ele>1487</ele>
         <time>2021-09-07T00:27:43Z</time>
       </trkpt>
       <trkpt lat="22.624794" lon="120.710199">
@@ -620,7 +612,7 @@
         <time>2021-09-07T00:55:14Z</time>
       </trkpt>
       <trkpt lat="22.62073" lon="120.702303">
-        <ele>1425.0</ele>
+        <ele>1425</ele>
         <time>2021-09-07T00:56:10Z</time>
       </trkpt>
       <trkpt lat="22.620426" lon="120.701896">
@@ -628,7 +620,7 @@
         <time>2021-09-07T00:57:06Z</time>
       </trkpt>
       <trkpt lat="22.619485" lon="120.701458">
-        <ele>1376.0</ele>
+        <ele>1376</ele>
         <time>2021-09-07T01:00:50Z</time>
       </trkpt>
       <trkpt lat="22.619656" lon="120.701958">
@@ -686,10 +678,6 @@
       <trkpt lat="22.61497" lon="120.701848">
         <ele>1253.4</ele>
         <time>2021-09-07T01:27:25Z</time>
-      </trkpt>
-      <trkpt lat="22.615088" lon="120.702209">
-        <ele>1230.8</ele>
-        <time>2021-09-07T01:29:36Z</time>
       </trkpt>
       <trkpt lat="22.615088" lon="120.702209">
         <ele>1230.8</ele>

@@ -179,8 +179,8 @@
         "start_point": "comm",
         "end_point": "start",
         "total_points": 41,
-        "comm_points": 1,
-        "gpx_points": 40
+        "comm_points": 2,
+        "gpx_points": 39
       }
     },
     {
@@ -196,8 +196,7 @@
         "order": "1(comm)",
         "type": "comm",
         "name": "comm",
-        "elevation": 1510.6,
-        "time": "2021-09-07T00:09:56.525969826+00:00"
+        "elevation": 1510.644883665866
       }
     },
     {
@@ -213,8 +212,7 @@
         "order": 2,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1505.6,
-        "time": "2021-09-07T00:11:13+00:00"
+        "elevation": 1505.6
       }
     },
     {
@@ -230,8 +228,7 @@
         "order": 3,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1499.2,
-        "time": "2021-09-07T00:13:07+00:00"
+        "elevation": 1499.2
       }
     },
     {
@@ -247,8 +244,7 @@
         "order": 4,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1498.3,
-        "time": "2021-09-07T00:14:23+00:00"
+        "elevation": 1498.3
       }
     },
     {
@@ -264,8 +260,7 @@
         "order": 5,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1498.0,
-        "time": "2021-09-07T00:16:17+00:00"
+        "elevation": 1498.0
       }
     },
     {
@@ -281,8 +276,7 @@
         "order": 6,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1497.9,
-        "time": "2021-09-07T00:18:50+00:00"
+        "elevation": 1497.9
       }
     },
     {
@@ -298,8 +292,7 @@
         "order": 7,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1496.3,
-        "time": "2021-09-07T00:22:00+00:00"
+        "elevation": 1496.3
       }
     },
     {
@@ -315,8 +308,7 @@
         "order": 8,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1492.2,
-        "time": "2021-09-07T00:24:32+00:00"
+        "elevation": 1492.2
       }
     },
     {
@@ -332,8 +324,7 @@
         "order": 9,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1487.0,
-        "time": "2021-09-07T00:27:43+00:00"
+        "elevation": 1487.0
       }
     },
     {
@@ -349,8 +340,7 @@
         "order": 10,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1488.5,
-        "time": "2021-09-07T00:30:15+00:00"
+        "elevation": 1488.5
       }
     },
     {
@@ -366,8 +356,7 @@
         "order": 11,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1489.1,
-        "time": "2021-09-07T00:32:09+00:00"
+        "elevation": 1489.1
       }
     },
     {
@@ -383,8 +372,7 @@
         "order": 12,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1488.5,
-        "time": "2021-09-07T00:32:48+00:00"
+        "elevation": 1488.5
       }
     },
     {
@@ -400,8 +388,7 @@
         "order": 13,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1486.1,
-        "time": "2021-09-07T00:35:20+00:00"
+        "elevation": 1486.1
       }
     },
     {
@@ -417,8 +404,7 @@
         "order": 14,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1464.3,
-        "time": "2021-09-07T00:41:41+00:00"
+        "elevation": 1464.3
       }
     },
     {
@@ -434,8 +420,7 @@
         "order": 15,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1454.3,
-        "time": "2021-09-07T00:43:35+00:00"
+        "elevation": 1454.3
       }
     },
     {
@@ -451,8 +436,7 @@
         "order": 16,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1446.6,
-        "time": "2021-09-07T00:46:07+00:00"
+        "elevation": 1446.6
       }
     },
     {
@@ -468,8 +452,7 @@
         "order": 17,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1441.8,
-        "time": "2021-09-07T00:47:24+00:00"
+        "elevation": 1441.8
       }
     },
     {
@@ -485,8 +468,7 @@
         "order": 18,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1439.3,
-        "time": "2021-09-07T00:48:02+00:00"
+        "elevation": 1439.3
       }
     },
     {
@@ -502,8 +484,7 @@
         "order": 19,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1436.1,
-        "time": "2021-09-07T00:48:40+00:00"
+        "elevation": 1436.1
       }
     },
     {
@@ -519,8 +500,7 @@
         "order": 20,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1430.6,
-        "time": "2021-09-07T00:52:26+00:00"
+        "elevation": 1430.6
       }
     },
     {
@@ -536,8 +516,7 @@
         "order": 21,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1428.6,
-        "time": "2021-09-07T00:53:22+00:00"
+        "elevation": 1428.6
       }
     },
     {
@@ -553,8 +532,7 @@
         "order": 22,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1428.3,
-        "time": "2021-09-07T00:54:18+00:00"
+        "elevation": 1428.3
       }
     },
     {
@@ -570,8 +548,7 @@
         "order": 23,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1427.5,
-        "time": "2021-09-07T00:55:14+00:00"
+        "elevation": 1427.5
       }
     },
     {
@@ -587,8 +564,7 @@
         "order": 24,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1425.0,
-        "time": "2021-09-07T00:56:10+00:00"
+        "elevation": 1425.0
       }
     },
     {
@@ -604,8 +580,7 @@
         "order": 25,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1417.5,
-        "time": "2021-09-07T00:57:06+00:00"
+        "elevation": 1417.5
       }
     },
     {
@@ -621,8 +596,7 @@
         "order": 26,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1376.0,
-        "time": "2021-09-07T01:00:50+00:00"
+        "elevation": 1376.0
       }
     },
     {
@@ -638,8 +612,7 @@
         "order": 27,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1316.1,
-        "time": "2021-09-07T01:06:10+00:00"
+        "elevation": 1316.1
       }
     },
     {
@@ -655,8 +628,7 @@
         "order": 28,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1316.5,
-        "time": "2021-09-07T01:08:48+00:00"
+        "elevation": 1316.5
       }
     },
     {
@@ -672,8 +644,7 @@
         "order": 29,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1314.6,
-        "time": "2021-09-07T01:11:26+00:00"
+        "elevation": 1314.6
       }
     },
     {
@@ -689,8 +660,7 @@
         "order": 30,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1303.6,
-        "time": "2021-09-07T01:12:29+00:00"
+        "elevation": 1303.6
       }
     },
     {
@@ -706,8 +676,7 @@
         "order": 31,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1296.9,
-        "time": "2021-09-07T01:14:04+00:00"
+        "elevation": 1296.9
       }
     },
     {
@@ -723,8 +692,7 @@
         "order": 32,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1291.6,
-        "time": "2021-09-07T01:16:11+00:00"
+        "elevation": 1291.6
       }
     },
     {
@@ -740,8 +708,7 @@
         "order": 33,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1286.7,
-        "time": "2021-09-07T01:18:17+00:00"
+        "elevation": 1286.7
       }
     },
     {
@@ -757,8 +724,7 @@
         "order": 34,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1268.5,
-        "time": "2021-09-07T01:20:52+00:00"
+        "elevation": 1268.5
       }
     },
     {
@@ -774,8 +740,7 @@
         "order": 35,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1265.3,
-        "time": "2021-09-07T01:21:19+00:00"
+        "elevation": 1265.3
       }
     },
     {
@@ -791,8 +756,7 @@
         "order": 36,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1263.3,
-        "time": "2021-09-07T01:21:32+00:00"
+        "elevation": 1263.3
       }
     },
     {
@@ -808,8 +772,7 @@
         "order": 37,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1261.9,
-        "time": "2021-09-07T01:21:58+00:00"
+        "elevation": 1261.9
       }
     },
     {
@@ -825,8 +788,7 @@
         "order": 38,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1260.4,
-        "time": "2021-09-07T01:22:24+00:00"
+        "elevation": 1260.4
       }
     },
     {
@@ -842,8 +804,7 @@
         "order": 39,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1254.2,
-        "time": "2021-09-07T01:24:22+00:00"
+        "elevation": 1254.2
       }
     },
     {
@@ -859,8 +820,7 @@
         "order": 40,
         "type": "gpx",
         "name": NaN,
-        "elevation": 1253.4,
-        "time": "2021-09-07T01:27:25+00:00"
+        "elevation": 1253.4
       }
     },
     {
@@ -873,11 +833,10 @@
         ]
       },
       "properties": {
-        "order": 41,
-        "type": "gpx",
-        "name": NaN,
-        "elevation": 1230.8,
-        "time": "2021-09-07T01:29:36+00:00"
+        "order": "41(start)",
+        "type": "comm",
+        "name": "start",
+        "elevation": 1230.8
       }
     }
   ]

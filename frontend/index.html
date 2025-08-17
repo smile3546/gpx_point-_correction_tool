@@ -29,14 +29,14 @@
         <div id="map"></div>
         <div id="point-list-container">
             <h2>點位列表</h2>
-            
+
             <!-- 新增操作按鈕區域 -->
             <div class="point-operations">
                 <button id="add-point" class="btn-primary">➕ 新增點位</button>
                 <button id="delete-point" class="btn-danger" disabled>🗑️ 刪除選中點位</button>
                 <div class="modification-status" id="modification-status"></div>
             </div>
-            
+
             <table id="point-table" class="display">
                 <thead>
                     <tr>
@@ -71,38 +71,43 @@
                         <option value="comm">通訊點</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="point-name">點位名稱：</label>
                     <input type="text" id="point-name" placeholder="通訊點名稱（選填）">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="point-lat">緯度：</label>
                     <input type="number" id="point-lat" step="0.000001" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="point-lng">經度：</label>
                     <input type="number" id="point-lng" step="0.000001" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="point-elevation">海拔：</label>
                     <input type="number" id="point-elevation" placeholder="海拔高度（公尺）">
                 </div>
-                
 
-                
+
+
                 <div class="form-group">
                     <label for="point-order">插入位置：</label>
-                    <select id="point-order" required>
+                    <select id="point-order" required onchange="toggleCustomOrder()">
                         <option value="start">路線起點</option>
                         <option value="end">路線終點</option>
-                        <option value="custom">自訂位置</option>
+                        <option value="custom">自訂編號</option>
                     </select>
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="custom-order-number">插入編號：</label>
+                    <input type="number" id="custom-order-number" min="1" value="1" placeholder="輸入要插入的編號位置">
+                </div>
+
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">新增點位</button>
                     <button type="button" onclick="closeModal()" class="btn-secondary">取消</button>

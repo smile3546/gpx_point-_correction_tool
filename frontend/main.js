@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
                 'a_test', 'b_test'
             ];
-            
+
             const availableRoutes = [];
-            
+
             for (const routeName of possibleRoutes) {
                 const isAvailable = await checkRouteExists(routeName);
                 if (isAvailable) {
@@ -52,13 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(`發現可用路線: ${routeName}`);
                 }
             }
-            
+
             routeNames = availableRoutes;
             console.log('動態掃描完成，可用路線:', routeNames);
 
             // 載入路線選擇器
             loadRouteNames();
-            
+
         } catch (error) {
             console.error('動態掃描失敗，使用預設路線列表:', error);
             // 回退到預設列表
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const encodedRouteName = encodeURIComponent(routeName);
             // 檢查 route_a 中的 route.geojson 是否存在
             const testPath = `/data_work/route_a/${encodedRouteName}/route.geojson`;
-            
+
             const response = await fetch(testPath, { method: 'HEAD' });
             return response.ok;
         } catch (error) {
@@ -86,6 +86,44 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeRouteNames().catch(error => {
         console.error('初始化路線列表失敗:', error);
     });
+
+    // 初始化新增點位的監聽器
+    initializeAddPointListeners();
+
+    // 初始化新增點位相關的監聽器
+    function initializeAddPointListeners() {
+        // 設定插入位置選擇監聽器
+        const orderSelect = document.getElementById('point-order');
+        const customOrderGroup = document.getElementById('custom-order-group');
+        const customOrderNumber = document.getElementById('custom-order-number');
+
+        console.log('元素檢查:');
+        console.log('orderSelect:', orderSelect);
+        console.log('customOrderGroup:', customOrderGroup);
+        console.log('customOrderNumber:', customOrderNumber);
+
+        if (!orderSelect || !customOrderGroup || !customOrderNumber) {
+            console.error('無法找到必要的元素，跳過監聽器設定');
+            return;
+        }
+
+        orderSelect.addEventListener('change', function () {
+            console.log('插入位置選擇變更:', this.value);
+            console.log('比對結果:', this.value === 'custom');
+
+            if (this.value === 'custom') {
+                console.log('進入 custom 分支');
+                customOrderGroup.style.display = 'block';
+                customOrderNumber.max = pointFeatures.length + 1;
+                customOrderNumber.value = pointFeatures.length + 1;
+                console.log('已設定 display: block');
+            } else {
+                console.log('進入其他分支');
+                customOrderGroup.style.display = 'none';
+                console.log('已設定 display: none');
+            }
+        });
+    }
 
     function loadRouteNames() {
         const routeSelector = document.getElementById('route-selector');
@@ -662,7 +700,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const center = map.getCenter();
         document.getElementById('point-lat').value = center.lat.toFixed(6);
         document.getElementById('point-lng').value = center.lng.toFixed(6);
+
+        // 隱藏自訂編號欄位
+        document.getElementById('custom-order-group').style.display = 'none';
     }
+
+
 
     function showAddPointModalAtLocation(lat, lng) {
         const modal = document.getElementById('add-point-modal');
@@ -678,6 +721,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 自動計算插入位置和順序
         const insertInfo = calculateInsertPosition(lat, lng);
         document.getElementById('point-order').value = insertInfo.position;
+
+        // 隱藏自訂編號欄位
+        document.getElementById('custom-order-group').style.display = 'none';
     }
 
     function closeModal() {
@@ -722,13 +768,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // 處理插入位置
+        const orderType = document.getElementById('point-order').value;
+        let customOrderNumber = null;
+
+        if (orderType === 'custom') {
+            const customInput = document.getElementById('custom-order-number').value;
+            customOrderNumber = parseInt(customInput);
+
+            if (isNaN(customOrderNumber) || customOrderNumber < 1 || customOrderNumber > pointFeatures.length + 1) {
+                alert(`請輸入有效的編號（1 到 ${pointFeatures.length + 1}）`);
+                return;
+            }
+        }
+
         const formData = {
             type: document.getElementById('point-type').value,
             name: document.getElementById('point-name').value,
             latitude: lat,
             longitude: lng,
             elevation: elevation,
-            order: document.getElementById('point-order').value
+            order: orderType,
+            customOrderNumber: customOrderNumber
         };
 
         addPoint(formData);
@@ -760,9 +821,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pointData.order === 'end') {
             insertIndex = pointFeatures.length;
         } else if (pointData.order === 'custom') {
-            // 使用計算出的插入位置
-            const insertInfo = calculateInsertPosition(pointData.latitude, pointData.longitude);
-            insertIndex = insertInfo.insertIndex;
+            if (pointData.customOrderNumber !== null) {
+                // 使用自訂編號位置（編號從1開始，索引從0開始）
+                insertIndex = pointData.customOrderNumber - 1;
+            } else {
+                // 使用計算出的插入位置（舊邏輯保留）
+                const insertInfo = calculateInsertPosition(pointData.latitude, pointData.longitude);
+                insertIndex = insertInfo.insertIndex;
+            }
         }
 
         // 插入新點位
@@ -1004,3 +1070,24 @@ document.addEventListener('DOMContentLoaded', () => {
     window.closeModal = closeModal;
     window.closeDeleteModal = closeDeleteModal;
 });
+
+// 切換自訂編號欄位顯示 - 全域函數
+function toggleCustomOrder() {
+    const orderSelect = document.getElementById('point-order');
+    const customOrderGroup = document.getElementById('custom-order-group');
+    const customOrderNumber = document.getElementById('custom-order-number');
+
+    console.log('toggleCustomOrder 被呼叫，選擇值:', orderSelect.value);
+
+    if (orderSelect.value === 'custom') {
+        customOrderGroup.style.display = 'block';
+        // 取得當前點位數量，預設為最後位置
+        const currentPointCount = document.querySelectorAll('#point-table tbody tr').length;
+        customOrderNumber.max = currentPointCount + 1;
+        customOrderNumber.value = currentPointCount + 1;
+        console.log('顯示自訂編號欄位，最大值:', currentPointCount + 1);
+    } else {
+        customOrderGroup.style.display = 'none';
+        console.log('隱藏自訂編號欄位');
+    }
+}
