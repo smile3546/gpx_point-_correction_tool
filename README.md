@@ -35,6 +35,13 @@
 - 自動建立分類資料夾結構
 - 分別匯出 TXT 和 GeoJSON 格式檔案
 
+### GeoJSON 轉 GPX 工具
+- 將 `data_work/` 中的完整路線轉換為 GPX 格式
+- 自動掃描所有路線版本（route_a 和 route_b）
+- 保留軌跡點的座標、海拔和時間資訊
+- 生成航點標記重要位置（通訊點等）
+- 輸出標準 GPX 1.1 格式檔案
+
 ## 檔案結構
 
 ```
@@ -61,9 +68,13 @@ gpx_point-_correction_tool/
 │   ├── index.html              # 瀏覽界面網頁
 │   ├── main.js                 # 瀏覽界面邏輯
 │   └── style.css               # 瀏覽界面樣式
+├── 修改好的gpx/                  # GeoJSON 轉 GPX 輸出資料夾
+│   ├── 路線名稱_route_a.gpx      # 路線 A 的 GPX 檔案
+│   └── 路線名稱_route_b.gpx      # 路線 B 的 GPX 檔案
 └── scripts/                     # 處理程式
     ├── pt_process.py           # 主要路線處理程式
     ├── route_splitter.py       # 路線切分程式
+    ├── geojson_to_gpx.py       # GeoJSON 轉 GPX 工具
     ├── utils.py                # 共用工具函數
     └── update_route_api.py     # 路線更新 API
 ```
@@ -94,7 +105,15 @@ python scripts/route_splitter.py
 - 自動建立分類資料夾並匯出檔案
 - 輸出到 `路線切分/` 資料夾
 
-### 步驟 4：檢視和編輯結果
+### 步驟 4：轉換為 GPX 格式（選用）
+```bash
+python scripts/geojson_to_gpx.py
+```
+- 將 `data_work/` 中的路線轉換為標準 GPX 格式
+- 輸出到 `修改好的gpx/` 資料夾
+- 檔名格式：`路線名稱_route_a.gpx`、`路線名稱_route_b.gpx`
+
+### 步驟 5：檢視和編輯結果
 
 #### 完整路線編輯
 開啟 `frontend/index.html` 使用路線編輯界面：
@@ -117,6 +136,7 @@ python scripts/route_splitter.py
 ### 輸出格式
 - **GeoJSON**：標準地理資料格式，包含路線幾何和點位屬性
 - **TXT**：制表符分隔的點位清單，包含完整的點位資訊
+- **GPX**：標準 GPS 軌跡格式，包含軌跡點和航點
 - **切分檔案**：按段落命名，例如 `北大武山_切分好的_route_a_part1_points.txt`
 
 ## 技術規格
