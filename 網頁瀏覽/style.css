@@ -1,0 +1,283 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0 0 20px 0;
+    font-size: 28px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* 三層選單樣式 */
+.route-selectors {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.selector-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px;
+}
+
+.selector-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.selector-group select {
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 14px;
+    min-width: 160px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.selector-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.selector-group select:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+}
+
+.selector-group select:hover:not(:disabled) {
+    border-color: #007bff;
+}
+
+main {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    gap: 20px;
+}
+
+#map {
+    flex: 2;
+    height: 80vh;
+    background-color: #eee;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+#info-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#segment-info {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+#segment-info h2 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 20px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+#segment-details {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#segment-details p {
+    margin: 8px 0;
+}
+
+#segment-details .stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#segment-details .stat-item:last-child {
+    border-bottom: none;
+}
+
+#segment-details .stat-label {
+    font-weight: 500;
+    color: #555;
+}
+
+#segment-details .stat-value {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#point-list-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+#point-list-container h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 18px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+#point-table {
+    width: 100%;
+    font-size: 13px;
+}
+
+#point-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    padding: 12px 8px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+#point-table td {
+    padding: 8px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#point-table tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* 載入狀態 */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.loading::before {
+    content: "⏳ ";
+    margin-right: 8px;
+}
+
+/* 錯誤狀態 */
+.error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.error::before {
+    content: "⚠️ ";
+    margin-right: 8px;
+}
+
+/* 成功狀態 */
+.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.success::before {
+    content: "✅ ";
+    margin-right: 8px;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+    main {
+        flex-direction: column;
+    }
+
+    #map {
+        height: 50vh;
+    }
+
+    .route-selectors {
+        gap: 15px;
+    }
+
+    .selector-group {
+        min-width: 140px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .route-selectors {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    main {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    #map {
+        height: 40vh;
+    }
+
+    #info-panel {
+        gap: 15px;
+    }
+
+    #segment-info,
+    #point-list-container {
+        padding: 15px;
+    }
+}
