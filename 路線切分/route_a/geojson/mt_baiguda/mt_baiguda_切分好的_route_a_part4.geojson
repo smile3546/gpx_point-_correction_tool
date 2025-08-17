@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.108951,
+            24.202724
+          ],
+          [
+            121.1381,
+            24.1969
+          ]
+        ]
+      },
+      "properties": {
+        "name": "mt_baiguda_route_a_part4",
+        "route_type": "segment",
+        "part_number": 4,
+        "start_point": "peak",
+        "end_point": "comm",
+        "total_points": 2,
+        "comm_points": 1,
+        "gpx_points": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.108951,
+          24.202724
+        ]
+      },
+      "properties": {
+        "order": 1,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3284.6,
+        "time": "2025-06-25T03:33:11+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.1381,
+          24.1969
+        ]
+      },
+      "properties": {
+        "order": "2(comm)",
+        "type": "comm",
+        "name": "comm",
+        "elevation": 3284.6,
+        "time": "2025-06-25T03:33:11+00:00"
+      }
+    }
+  ]
+}

@@ -31,20 +31,55 @@ document.addEventListener('DOMContentLoaded', () => {
         routeB: { points: [], metadata: {} }
     };
 
-    // 初始化路線列表 - 簡化版
+    // 動態掃描 data_work 資料夾中的路線
     async function initializeRouteNames() {
-        console.log('開始初始化路線列表...');
+        console.log('開始動態掃描 data_work 資料夾...');
 
-        // 直接使用完整的路線列表，包含所有已知路線
-        routeNames = [
-            'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
-            '北大武山', '白姑大山', 'a_test', 'b_test'
-        ];
+        try {
+            // 掃描可能的路線名稱
+            const possibleRoutes = [
+                'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
+                'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
+                'a_test', 'b_test'
+            ];
+            
+            const availableRoutes = [];
+            
+            for (const routeName of possibleRoutes) {
+                const isAvailable = await checkRouteExists(routeName);
+                if (isAvailable) {
+                    availableRoutes.push(routeName);
+                    console.log(`發現可用路線: ${routeName}`);
+                }
+            }
+            
+            routeNames = availableRoutes;
+            console.log('動態掃描完成，可用路線:', routeNames);
 
-        console.log('使用路線列表:', routeNames);
+            // 載入路線選擇器
+            loadRouteNames();
+            
+        } catch (error) {
+            console.error('動態掃描失敗，使用預設路線列表:', error);
+            // 回退到預設列表
+            routeNames = ['mt_beidawu', 'mt_baiguda'];
+            loadRouteNames();
+        }
+    }
 
-        // 載入路線選擇器
-        loadRouteNames();
+    // 檢查路線是否在 data_work 中存在
+    async function checkRouteExists(routeName) {
+        try {
+            const encodedRouteName = encodeURIComponent(routeName);
+            // 檢查 route_a 中的 route.geojson 是否存在
+            const testPath = `/data_work/route_a/${encodedRouteName}/route.geojson`;
+            
+            const response = await fetch(testPath, { method: 'HEAD' });
+            return response.ok;
+        } catch (error) {
+            console.log(`路線 ${routeName} 檢查失敗:`, error);
+            return false;
+        }
     }
 
     // 初始化路線列表

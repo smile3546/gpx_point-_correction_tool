@@ -86,8 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
         nameSelector.innerHTML = '<option value="">載入中...</option>';
 
         try {
-            // 掃描已知可能的路線名稱
-            const possibleRoutes = ['北大武山', '白姑大山'];
+            // 動態掃描可能的路線名稱（從實際資料夾結構推測）
+            const possibleRoutes = [
+                'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
+                'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
+                'a_test', 'b_test'
+            ];
             const availableRoutes = [];
 
             for (const routeName of possibleRoutes) {
