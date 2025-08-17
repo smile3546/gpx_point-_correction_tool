@@ -83,6 +83,7 @@ python scripts/pt_process.py
 - 生成包含所有點位的完整路線資料
 - 分割成路線 A 和路線 B
 - 輸出到 `data_work/` 資料夾
+- 利用frontend資料夾中的網頁修改點位
 
 ### 步驟 3：切分路線
 ```bash
