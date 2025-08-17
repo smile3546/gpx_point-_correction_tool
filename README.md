@@ -81,12 +81,12 @@ gpx_point-_correction_tool/
 
 ## 使用流程
 
-### 步驟 1：準備資料
+### 步驟 1：準備資料 (data_raw/)
 1. 將 GPX 軌跡檔案放入 `data_raw/gpx/` 資料夾
 2. 將對應的通訊點 TXT 檔案放入 `data_raw/txt/` 資料夾
 3. 確保檔案名稱一致，例如：`北大武山.gpx` 和 `北大武山.txt`
 
-### 步驟 2：處理路線
+### 步驟 2：處理路線 (pt_process.py → data_work/)
 ```bash
 python scripts/pt_process.py
 ```
@@ -94,9 +94,14 @@ python scripts/pt_process.py
 - 生成包含所有點位的完整路線資料
 - 分割成路線 A 和路線 B
 - 輸出到 `data_work/` 資料夾
-- 利用frontend資料夾中的網頁修改點位
 
-### 步驟 3：切分路線
+### 步驟 3：檢視編輯 (frontend/)
+開啟 `frontend/index.html` 使用路線編輯界面：
+- 查看完整的路線 A 或路線 B
+- 編輯、新增或刪除點位資料
+- 下載修改後的檔案
+
+### 步驟 4：切分路線 (route_splitter.py → 路線切分/)
 ```bash
 python scripts/route_splitter.py
 ```
@@ -105,27 +110,19 @@ python scripts/route_splitter.py
 - 自動建立分類資料夾並匯出檔案
 - 輸出到 `路線切分/` 資料夾
 
-### 步驟 4：轉換為 GPX 格式（選用）
+### 步驟 5：切分路線瀏覽（可選擇）
+開啟 `網頁瀏覽/index.html` 使用路線切分瀏覽界面：
+- 使用三層選單選擇要檢視的路線段落
+- 查看段落統計資訊和詳細點位
+- 專門用於檢視切分後的路線段落
+
+### 步驟 6：轉換 GPX (geojson_to_gpx.py → 修改好的gpx/)
 ```bash
 python scripts/geojson_to_gpx.py
 ```
 - 將 `data_work/` 中的路線轉換為標準 GPX 格式
 - 輸出到 `修改好的gpx/` 資料夾
 - 檔名格式：`路線名稱_route_a.gpx`、`路線名稱_route_b.gpx`
-
-### 步驟 5：檢視和編輯結果
-
-#### 完整路線編輯
-開啟 `frontend/index.html` 使用路線編輯界面：
-- 查看完整的路線 A 或路線 B
-- 編輯、新增或刪除點位資料
-- 下載修改後的檔案
-
-#### 切分路線瀏覽
-開啟 `網頁瀏覽/index.html` 使用路線切分瀏覽界面：
-- 使用三層選單選擇要檢視的路線段落
-- 查看段落統計資訊和詳細點位
-- 專門用於檢視切分後的路線段落
 
 ## 檔案格式說明
 
