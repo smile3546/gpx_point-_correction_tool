@@ -80,7 +80,7 @@ def save_edited_files():
         return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
-    print("🚀 啟動檔案儲存 API 服務器...")
+    print("啟動檔案儲存 API 服務器...")
     print(f"工作目錄: {WORK_DIR.absolute()}")
     print("API 端點:")
     print("  - POST /api/save-edited-files - 儲存編輯後的檔案")

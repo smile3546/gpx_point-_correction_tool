@@ -5,7 +5,7 @@ from typing import List, Tuple
 def load_txt_points(txt_file: Path) -> pd.DataFrame:
     """從 TXT 檔案讀取資料，並確保欄位名稱正確。"""
     if not txt_file.exists():
-        print(f"⚠️ 檔案不存在: {txt_file}")
+        print(f"檔案不存在: {txt_file}")
         return pd.DataFrame()
     try:
         # 假設 TXT 檔案包含 'latitude', 'longitude', 'elevation' 欄位
@@ -14,7 +14,7 @@ def load_txt_points(txt_file: Path) -> pd.DataFrame:
             raise ValueError("TXT 檔案欄位不正確，應包含 'latitude', 'longitude', 'elevation'。")
         return df
     except Exception as e:
-        print(f"❌ 讀取 TXT 檔案 {txt_file} 時發生錯誤: {e}")
+        print(f"讀取 TXT 檔案 {txt_file} 時發生錯誤: {e}")
         return pd.DataFrame()
 
 def load_communication_points(txt_file: Path) -> List[Tuple[str, float, float, float]]:
@@ -32,5 +32,5 @@ def load_communication_points(txt_file: Path) -> List[Tuple[str, float, float, f
             points.append((label, lat, lon, ele))
         return points
     except Exception as e:
-        print(f"⚠️ 讀取通訊點時發生錯誤，請檢查 TXT 檔案格式: {e}")
+        print(f"讀取通訊點時發生錯誤，請檢查 TXT 檔案格式: {e}")
         return []

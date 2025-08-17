@@ -194,7 +194,7 @@ main {
 }
 
 .loading::before {
-    content: "⏳ ";
+    content: "載入中 ";
     margin-right: 8px;
 }
 
@@ -209,7 +209,7 @@ main {
 }
 
 .error::before {
-    content: "⚠️ ";
+    content: "錯誤 ";
     margin-right: 8px;
 }
 
@@ -224,7 +224,7 @@ main {
 }
 
 .success::before {
-    content: "✅ ";
+    content: "成功 ";
     margin-right: 8px;
 }
 

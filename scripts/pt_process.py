@@ -355,17 +355,17 @@ if __name__ == "__main__":
     # 建立輸出資料夾
     work_folder.mkdir(parents=True, exist_ok=True)
 
-    print("🚀 開始處理 GPX 路線與通訊點...")
+    print("開始處理 GPX 路線與通訊點...")
 
     for gpx_file in raw_gpx_folder.glob("*.gpx"):
         base = gpx_file.stem
         txt_file = raw_txt_folder / f"{base}.txt"
 
         if not txt_file.exists():
-            print(f"⚠️ 缺少對應的 TXT 檔案: {txt_file.name}")
+            print(f"缺少對應的 TXT 檔案: {txt_file.name}")
             continue
 
-        print(f"\n📍 處理中: {gpx_file.name}")
+        print(f"\n處理中: {gpx_file.name}")
 
         try:
             # 1. 讀取資料 (保留 time 欄位)
@@ -376,11 +376,11 @@ if __name__ == "__main__":
             comm_gdf = load_txt_to_gdf(txt_file)
 
             if route_gdf.empty:
-                print(f"⚠️ GPX 檔案為空: {gpx_file.name}")
+                print(f"GPX 檔案為空: {gpx_file.name}")
                 continue
 
             if comm_gdf.empty:
-                print(f"⚠️ 通訊點檔案為空: {txt_file.name}")
+                print(f"通訊點檔案為空: {txt_file.name}")
                 continue
 
             print(f"  -> GPX 軌跡點: {len(route_gdf)}, 通訊點: {len(comm_gdf)}")
@@ -425,8 +425,8 @@ if __name__ == "__main__":
                 )
 
         except Exception as e:
-            print(f"❌ 處理 {gpx_file.name} 時發生錯誤: {str(e)}")
+            print(f"處理 {gpx_file.name} 時發生錯誤: {str(e)}")
             continue
 
-    print("\n✅ 所有路線處理完成！")
+    print("\n所有路線處理完成！")
     print(f"結果已匯出至: {work_folder.absolute()}")

@@ -1,8 +1,120 @@
 import pandas as pd
 import json
 import os
+import math
 from pathlib import Path
 from typing import List, Dict, Tuple, Any
+
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """計算兩點間的地理距離（公尺），使用 Haversine 公式"""
+    # 轉換為弧度
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    
+    # Haversine 公式
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    
+    # 地球半徑（公尺）
+    earth_radius = 6371000
+    return earth_radius * c
+
+
+def interpolate_missing_data_df(df: pd.DataFrame) -> pd.DataFrame:
+    """對 DataFrame 中缺少時間和高度的點位進行插值"""
+    from datetime import datetime
+    
+    # 建立副本避免修改原始資料
+    df_copy = df.copy()
+    
+    # 處理時間插值
+    for i in range(len(df_copy)):
+        if pd.isna(df_copy.iloc[i].get('時間')) or df_copy.iloc[i].get('時間') == '':
+            # 找前一個有時間的點
+            prev_idx = i - 1
+            while prev_idx >= 0 and (pd.isna(df_copy.iloc[prev_idx].get('時間')) or df_copy.iloc[prev_idx].get('時間') == ''):
+                prev_idx -= 1
+            
+            # 找後一個有時間的點
+            next_idx = i + 1
+            while next_idx < len(df_copy) and (pd.isna(df_copy.iloc[next_idx].get('時間')) or df_copy.iloc[next_idx].get('時間') == ''):
+                next_idx += 1
+            
+            # 如果前後都有時間，進行插值
+            if prev_idx >= 0 and next_idx < len(df_copy):
+                prev_point = df_copy.iloc[prev_idx]
+                next_point = df_copy.iloc[next_idx]
+                
+                # 計算累積距離
+                total_distance = 0
+                current_distance = 0
+                
+                for j in range(prev_idx, next_idx):
+                    dist = calculate_distance(
+                        float(df_copy.iloc[j]['緯度']), float(df_copy.iloc[j]['經度']),
+                        float(df_copy.iloc[j+1]['緯度']), float(df_copy.iloc[j+1]['經度'])
+                    )
+                    total_distance += dist
+                    if j < i:
+                        current_distance += dist
+                
+                # 時間插值
+                if total_distance > 0:
+                    ratio = current_distance / total_distance
+                    prev_time_str = str(prev_point['時間'])
+                    next_time_str = str(next_point['時間'])
+                    
+                    try:
+                        prev_time = datetime.fromisoformat(prev_time_str.replace('Z', '+00:00'))
+                        next_time = datetime.fromisoformat(next_time_str.replace('Z', '+00:00'))
+                        time_diff = next_time - prev_time
+                        interpolated_time = prev_time + time_diff * ratio
+                        df_copy.iloc[i, df_copy.columns.get_loc('時間')] = interpolated_time.isoformat().replace('+00:00', '+00:00')
+                    except:
+                        pass  # 如果時間格式有問題，跳過
+    
+    # 處理高度插值
+    for i in range(len(df_copy)):
+        if pd.isna(df_copy.iloc[i].get('海拔（約）')):
+            # 找前一個有高度的點
+            prev_idx = i - 1
+            while prev_idx >= 0 and pd.isna(df_copy.iloc[prev_idx].get('海拔（約）')):
+                prev_idx -= 1
+            
+            # 找後一個有高度的點
+            next_idx = i + 1
+            while next_idx < len(df_copy) and pd.isna(df_copy.iloc[next_idx].get('海拔（約）')):
+                next_idx += 1
+            
+            # 如果前後都有高度，進行插值
+            if prev_idx >= 0 and next_idx < len(df_copy):
+                prev_point = df_copy.iloc[prev_idx]
+                next_point = df_copy.iloc[next_idx]
+                
+                # 計算累積距離
+                total_distance = 0
+                current_distance = 0
+                
+                for j in range(prev_idx, next_idx):
+                    dist = calculate_distance(
+                        float(df_copy.iloc[j]['緯度']), float(df_copy.iloc[j]['經度']),
+                        float(df_copy.iloc[j+1]['緯度']), float(df_copy.iloc[j+1]['經度'])
+                    )
+                    total_distance += dist
+                    if j < i:
+                        current_distance += dist
+                
+                # 高度插值
+                if total_distance > 0:
+                    ratio = current_distance / total_distance
+                    prev_ele = float(prev_point['海拔（約）'])
+                    next_ele = float(next_point['海拔（約）'])
+                    interpolated_ele = prev_ele + (next_ele - prev_ele) * ratio
+                    df_copy.iloc[i, df_copy.columns.get_loc('海拔（約）')] = round(interpolated_ele, 1)
+    
+    return df_copy
 
 
 def read_points_file(points_path: Path) -> pd.DataFrame:
@@ -19,7 +131,7 @@ def read_points_file(points_path: Path) -> pd.DataFrame:
         df = pd.read_csv(points_path, sep="\t", encoding="utf-8-sig")
         return df
     except Exception as e:
-        print(f"❌ 讀取 {points_path} 失敗: {e}")
+        print(f"讀取 {points_path} 失敗: {e}")
         return pd.DataFrame()
 
 
@@ -37,7 +149,7 @@ def read_geojson_file(geojson_path: Path) -> Dict[str, Any]:
         with open(geojson_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        print(f"❌ 讀取 {geojson_path} 失敗: {e}")
+        print(f"讀取 {geojson_path} 失敗: {e}")
         return {}
 
 
@@ -54,7 +166,7 @@ def read_original_comm_points(route_name: str) -> List[Dict[str, Any]]:
     raw_txt_path = Path(f"./data_raw/txt/{route_name}.txt")
 
     if not raw_txt_path.exists():
-        print(f"  ❌ 找不到原始通訊點檔案: {raw_txt_path}")
+        print(f"  找不到原始通訊點檔案: {raw_txt_path}")
         return []
 
     try:
@@ -77,7 +189,7 @@ def read_original_comm_points(route_name: str) -> List[Dict[str, Any]]:
         return comm_points
 
     except Exception as e:
-        print(f"  ❌ 讀取原始通訊點失敗: {e}")
+        print(f"  讀取原始通訊點失敗: {e}")
         return []
 
 
@@ -150,7 +262,7 @@ def split_route_by_comm_points(
         路線段列表，每段包含起始點、結束點、資料等資訊
     """
     if len(comm_points) < 2:
-        print(f"  ⚠️ 通訊點少於2個，無法切分")
+        print(f"  通訊點少於2個，無法切分")
         return []
 
     segments = []
@@ -215,7 +327,7 @@ def export_segment_txt(
     # 匯出檔案
     file_path = output_path / filename
     data.to_csv(file_path, sep="\t", index=False, encoding="utf-8-sig")
-    print(f"      ✓ 匯出 TXT: {route_type}/txt/{route_name}/{filename}")
+    print(f"      匯出 TXT: {route_type}/txt/{route_name}/{filename}")
 
 
 def export_segment_geojson(
@@ -309,7 +421,7 @@ def export_segment_geojson(
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(new_geojson, f, ensure_ascii=False, indent=2)
 
-    print(f"      ✓ 匯出 GeoJSON: {route_type}/geojson/{route_name}/{filename}")
+    print(f"      匯出 GeoJSON: {route_type}/geojson/{route_name}/{filename}")
 
 
 def process_single_route(
@@ -324,7 +436,7 @@ def process_single_route(
         route_type: 路線類型 (route_a 或 route_b)
         output_base: 輸出基礎目錄
     """
-    print(f"\n📍 處理 {route_name} - {route_type}")
+    print(f"\n處理 {route_name} - {route_type}")
 
     # 檔案路徑
     points_file = route_dir / "points.txt"
@@ -332,10 +444,10 @@ def process_single_route(
 
     # 檢查檔案是否存在
     if not points_file.exists():
-        print(f"  ❌ 找不到 {points_file}")
+        print(f"  找不到 {points_file}")
         return
     if not geojson_file.exists():
-        print(f"  ❌ 找不到 {geojson_file}")
+        print(f"  找不到 {geojson_file}")
         return
 
     # 讀取資料
@@ -344,15 +456,19 @@ def process_single_route(
     geojson = read_geojson_file(geojson_file)
 
     if df.empty or not geojson:
-        print(f"  ❌ 資料讀取失敗")
+        print(f"  資料讀取失敗")
         return
+
+    # 對缺少時間和高度的點位進行插值
+    print(f"  -> 進行時間和高度插值...")
+    df = interpolate_missing_data_df(df)
 
     # 讀取原始通訊點資料
     print(f"  -> 讀取原始通訊點資料...")
     original_comm_points = read_original_comm_points(route_name)
 
     if not original_comm_points:
-        print(f"  ❌ 無法讀取原始通訊點資料")
+        print(f"  無法讀取原始通訊點資料")
         return
 
     # 在處理後的路線中找出通訊點位置
@@ -360,7 +476,7 @@ def process_single_route(
     comm_points = find_comm_points_in_route(df, original_comm_points)
 
     if len(comm_points) < 2:
-        print(f"  ⚠️ 通訊點不足，跳過切分")
+        print(f"  通訊點不足，跳過切分")
         return
 
     # 切分路線
@@ -368,7 +484,7 @@ def process_single_route(
     segments = split_route_by_comm_points(df, comm_points)
 
     if not segments:
-        print(f"  ❌ 路線切分失敗")
+        print(f"  路線切分失敗")
         return
 
     # 匯出每個段落
@@ -377,12 +493,12 @@ def process_single_route(
         export_segment_txt(segment, output_base, route_name, route_type)
         export_segment_geojson(segment, geojson, output_base, route_name, route_type)
 
-    print(f"  ✅ {route_name} - {route_type} 處理完成")
+    print(f"  {route_name} - {route_type} 處理完成")
 
 
 def main():
     """主要執行函數"""
-    print("🚀 開始路線切分處理...")
+    print("開始路線切分處理...")
 
     # 設定路徑
     data_work_dir = Path("./data_work")
@@ -390,7 +506,7 @@ def main():
 
     # 檢查來源目錄
     if not data_work_dir.exists():
-        print(f"❌ 找不到來源目錄: {data_work_dir}")
+        print(f"找不到來源目錄: {data_work_dir}")
         return
 
     # 建立基礎輸出目錄結構
@@ -410,7 +526,7 @@ def main():
         route_type_dir = data_work_dir / route_type
 
         if not route_type_dir.exists():
-            print(f"⚠️ 跳過不存在的目錄: {route_type_dir}")
+            print(f"跳過不存在的目錄: {route_type_dir}")
             continue
 
         # 遍歷每個路線目錄
@@ -419,7 +535,7 @@ def main():
                 route_name = route_dir.name
                 process_single_route(route_dir, route_name, route_type, output_base_dir)
 
-    print(f"\n✅ 所有路線切分處理完成！")
+    print(f"\n所有路線切分處理完成！")
     print(f"結果已匯出至: {output_base_dir.absolute()}")
 
 
