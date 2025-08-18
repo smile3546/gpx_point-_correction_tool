@@ -86,7 +86,30 @@ document.addEventListener('DOMContentLoaded', () => {
         nameSelector.innerHTML = '<option value="">載入中...</option>';
 
         try {
-            // 動態掃描可能的路線名稱（從實際資料夾結構推測）
+            // 嘗試從 API 獲取切分路線列表
+            try {
+                const response = await fetch('http://localhost:5000/api/segment-routes');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.routes && data.routes.length > 0) {
+                        console.log('從 API 獲取切分路線列表成功:', data.routes);
+                        
+                        nameSelector.innerHTML = '<option value="">請選擇路線...</option>';
+                        data.routes.forEach(routeName => {
+                            const option = document.createElement('option');
+                            option.value = routeName;
+                            option.textContent = routeName;
+                            nameSelector.appendChild(option);
+                        });
+                        console.log(`成功載入 ${data.routes.length} 個切分路線`);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log('切分路線 API 不可用，使用本地檢查方式:', error);
+            }
+
+            // 回退到本地檢查方式
             const possibleRoutes = [
                 'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
                 'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',

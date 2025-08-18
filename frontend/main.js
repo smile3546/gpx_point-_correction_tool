@@ -36,35 +36,181 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('開始動態掃描 data_work 資料夾...');
 
         try {
-            // 掃描可能的路線名稱
-            const possibleRoutes = [
-                'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
-                'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
-                'a_test', 'b_test'
-            ];
-
-            const availableRoutes = [];
-
-            for (const routeName of possibleRoutes) {
-                const isAvailable = await checkRouteExists(routeName);
-                if (isAvailable) {
-                    availableRoutes.push(routeName);
-                    console.log(`發現可用路線: ${routeName}`);
-                }
+            // 嘗試動態讀取資料夾內容
+            const availableRoutes = await scanDataWorkFolders();
+            
+            if (availableRoutes.length > 0) {
+                routeNames = availableRoutes;
+                console.log('動態掃描完成，發現路線:', routeNames);
+            } else {
+                console.warn('動態掃描未發現任何路線，使用備用掃描方法');
+                routeNames = await fallbackScanRoutes();
             }
-
-            routeNames = availableRoutes;
-            console.log('動態掃描完成，可用路線:', routeNames);
 
             // 載入路線選擇器
             loadRouteNames();
 
         } catch (error) {
-            console.error('動態掃描失敗，使用預設路線列表:', error);
-            // 回退到預設列表
-            routeNames = ['mt_beidawu', 'mt_baiguda'];
+            console.error('動態掃描失敗:', error);
+            // 最後回退方案
+            routeNames = await fallbackScanRoutes();
             loadRouteNames();
         }
+    }
+
+    // 主要的動態掃描方法
+    async function scanDataWorkFolders() {
+        console.log('嘗試使用動態掃描 API...');
+        
+        // 方法1: 嘗試使用專用的路線列表 API
+        try {
+            const apiResponse = await fetch('http://localhost:5000/api/routes', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (apiResponse.ok) {
+                const data = await apiResponse.json();
+                if (data.success && data.routes && data.routes.length > 0) {
+                    console.log('從 API 獲取到路線列表:', data.routes);
+                    return data.routes;
+                }
+            }
+        } catch (error) {
+            console.log('路線列表 API 不可用:', error);
+        }
+
+        // 方法2: 嘗試直接讀取資料夾目錄
+        try {
+            console.log('嘗試使用 fetch API 掃描資料夾...');
+            
+            const response = await fetch('/data_work/route_a/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml'
+                }
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const routeNames = extractRouteNamesFromHTML(html);
+                console.log('從 HTML 目錄列表提取到路線:', routeNames);
+                
+                // 驗證提取到的路線是否真的存在
+                const validRoutes = [];
+                for (const routeName of routeNames) {
+                    const isValid = await checkRouteExists(routeName);
+                    if (isValid) {
+                        validRoutes.push(routeName);
+                    }
+                }
+                
+                return validRoutes;
+            }
+        } catch (error) {
+            console.log('資料夾掃描失敗:', error);
+        }
+        
+        return [];
+    }
+
+    // 從 HTML 目錄列表中提取路線名稱
+    function extractRouteNamesFromHTML(html) {
+        const routeNames = [];
+        
+        // 創建一個臨時的 DOM 元素來解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        // 查找所有的連結，過濾出資料夾名稱
+        const links = tempDiv.querySelectorAll('a');
+        
+        links.forEach(link => {
+            const href = link.getAttribute('href');
+            const text = link.textContent.trim();
+            
+            // 過濾掉 .. 和其他非資料夾項目
+            if (href && href !== '../' && href.endsWith('/')) {
+                const folderName = href.replace('/', '');
+                // 排除常見的系統資料夾
+                if (folderName && !folderName.startsWith('.') && folderName !== 'index') {
+                    routeNames.push(decodeURIComponent(folderName));
+                }
+            }
+        });
+        
+        return routeNames;
+    }
+
+    // 智能備用掃描方法 - 使用啟發式方法檢測路線
+    async function fallbackScanRoutes() {
+        console.log('使用智能備用掃描方法...');
+        
+        // 基礎常見路線模式
+        const basePatterns = [
+            'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
+            'hehuan_north', 'hehuan_north_west', 'hehuan_main', 'hehuan_east'
+        ];
+        
+        // 生成更多可能的路線名稱模式
+        const generatedPatterns = [
+            // 山峰系列
+            ...generateMountainPatterns(),
+            // 地區系列
+            'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
+            // 測試系列
+            'a_test', 'b_test', 'test_route_1', 'test_route_2'
+        ];
+        
+        // 合併所有模式並去除重複
+        const allPatterns = [...new Set([...basePatterns, ...generatedPatterns])];
+        const availableRoutes = [];
+
+        // 使用並行檢查提高效率
+        const checkPromises = allPatterns.map(async routeName => {
+            const isAvailable = await checkRouteExists(routeName);
+            if (isAvailable) {
+                console.log(`備用掃描發現路線: ${routeName}`);
+                return routeName;
+            }
+            return null;
+        });
+
+        const results = await Promise.all(checkPromises);
+        
+        // 過濾出有效的路線
+        results.forEach(routeName => {
+            if (routeName) {
+                availableRoutes.push(routeName);
+            }
+        });
+
+        console.log(`備用掃描完成，共發現 ${availableRoutes.length} 個路線`);
+        return availableRoutes.sort();
+    }
+
+    // 生成可能的山峰路線名稱
+    function generateMountainPatterns() {
+        const mountainPrefixes = ['mt_', ''];
+        const mountainNames = [
+            'hehuanshan', 'hehuan', 'qilai', 'nanhu', 'zhongyang',
+            'yushan', 'snow', 'dabajian', 'xiaobajian'
+        ];
+        const mountainSuffixes = ['', '_main', '_north', '_south', '_east', '_west'];
+        
+        const patterns = [];
+        
+        mountainPrefixes.forEach(prefix => {
+            mountainNames.forEach(name => {
+                mountainSuffixes.forEach(suffix => {
+                    patterns.push(prefix + name + suffix);
+                });
+            });
+        });
+        
+        return patterns;
     }
 
     // 檢查路線是否在 data_work 中存在
@@ -129,17 +275,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const routeSelector = document.getElementById('route-selector');
         routeSelector.innerHTML = '';
 
-        console.log('正在載入路線選擇器，路線數量:', routeNames.length);
+        // 去除重複的路線名稱
+        const uniqueRouteNames = [...new Set(routeNames)];
+        console.log('正在載入路線選擇器，去重前:', routeNames.length, '去重後:', uniqueRouteNames.length);
 
-        if (routeNames.length > 0) {
-            routeNames.forEach(name => {
+        if (uniqueRouteNames.length > 0) {
+            uniqueRouteNames.forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
                 option.textContent = name; // 直接使用原始名稱，不進行編碼
                 routeSelector.appendChild(option);
                 console.log('新增路線選項:', name);
             });
-            currentRouteName = routeNames[0];
+            currentRouteName = uniqueRouteNames[0];
             console.log('設定預設路線:', currentRouteName);
 
             // 檢查預設路線的檔案是否存在
