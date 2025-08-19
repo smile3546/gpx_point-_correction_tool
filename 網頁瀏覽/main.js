@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('路線切分瀏覽工具載入完成');
+    console.log('GPX 檔案瀏覽工具載入完成');
 
     // 初始化地圖
     const map = L.map('map').setView([23.5, 121], 10);
@@ -16,234 +16,202 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 當前選中的資料
     let currentData = {
-        version: '',
-        routeName: '',
-        partNumber: '',
-        geojsonData: null,
-        txtData: null
+        fileName: '',
+        gpxData: null,
+        parsedData: null
     };
 
+    // GPX 解析功能
+    function parseGPX(gpxText) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(gpxText, 'text/xml');
+        
+        const tracks = [];
+        const waypoints = [];
+        
+        // 解析軌跡點 (trkpt)
+        const trkElements = xmlDoc.getElementsByTagName('trk');
+        for (let i = 0; i < trkElements.length; i++) {
+            const trksegs = trkElements[i].getElementsByTagName('trkseg');
+            for (let j = 0; j < trksegs.length; j++) {
+                const trkpts = trksegs[j].getElementsByTagName('trkpt');
+                const trackPoints = [];
+                
+                for (let k = 0; k < trkpts.length; k++) {
+                    const trkpt = trkpts[k];
+                    const lat = parseFloat(trkpt.getAttribute('lat'));
+                    const lon = parseFloat(trkpt.getAttribute('lon'));
+                    
+                    const elevation = trkpt.getElementsByTagName('ele')[0]?.textContent;
+                    const time = trkpt.getElementsByTagName('time')[0]?.textContent;
+                    const name = trkpt.getElementsByTagName('name')[0]?.textContent;
+                    
+                    trackPoints.push({
+                        lat: lat,
+                        lon: lon,
+                        elevation: elevation ? parseFloat(elevation) : null,
+                        time: time,
+                        name: name,
+                        order: k + 1
+                    });
+                }
+                
+                if (trackPoints.length > 0) {
+                    tracks.push(trackPoints);
+                }
+            }
+        }
+        
+        // 解析航點 (wpt)
+        const wptElements = xmlDoc.getElementsByTagName('wpt');
+        for (let i = 0; i < wptElements.length; i++) {
+            const wpt = wptElements[i];
+            const lat = parseFloat(wpt.getAttribute('lat'));
+            const lon = parseFloat(wpt.getAttribute('lon'));
+            
+            const elevation = wpt.getElementsByTagName('ele')[0]?.textContent;
+            const name = wpt.getElementsByTagName('name')[0]?.textContent;
+            const desc = wpt.getElementsByTagName('desc')[0]?.textContent;
+            
+            waypoints.push({
+                lat: lat,
+                lon: lon,
+                elevation: elevation ? parseFloat(elevation) : null,
+                name: name,
+                description: desc,
+                type: 'waypoint'
+            });
+        }
+        
+        return { tracks, waypoints };
+    }
+
     // DOM 元素
-    const versionSelector = document.getElementById('route-version');
     const nameSelector = document.getElementById('route-name');
-    const partSelector = document.getElementById('route-part');
     const segmentDetails = document.getElementById('segment-details');
+
+    // 可用的 GPX 檔案列表
+    let availableFiles = [];
 
     // 初始化事件監聽器
     initializeEventListeners();
+    loadAvailableGPXFiles();
 
     function initializeEventListeners() {
-        // 版本選擇器變更
-        versionSelector.addEventListener('change', async (e) => {
-            const selectedVersion = e.target.value;
-            console.log('選擇版本:', selectedVersion);
-
-            if (selectedVersion) {
-                currentData.version = selectedVersion;
-                await loadRouteNames(selectedVersion);
-                nameSelector.disabled = false;
-                resetPartSelector();
-                clearDisplay();
-            } else {
-                resetSelectors();
-                clearDisplay();
-            }
-        });
-
-        // 路線名稱選擇器變更
+        // GPX 檔案選擇器變更
         nameSelector.addEventListener('change', async (e) => {
-            const selectedName = e.target.value;
-            console.log('選擇路線:', selectedName);
+            const selectedFile = e.target.value;
+            console.log('選擇 GPX 檔案:', selectedFile);
 
-            if (selectedName) {
-                currentData.routeName = selectedName;
-                await loadPartNumbers(currentData.version, selectedName);
-                partSelector.disabled = false;
-                clearDisplay();
-            } else {
-                resetPartSelector();
-                clearDisplay();
-            }
-        });
-
-        // 段落選擇器變更
-        partSelector.addEventListener('change', async (e) => {
-            const selectedPart = e.target.value;
-            console.log('選擇段落:', selectedPart);
-
-            if (selectedPart) {
-                currentData.partNumber = selectedPart;
-                await loadSegmentData();
+            if (selectedFile) {
+                currentData.fileName = selectedFile;
+                await loadGPXData(selectedFile);
             } else {
                 clearDisplay();
             }
         });
     }
 
-    // 載入路線名稱列表
-    async function loadRouteNames(version) {
-        console.log(`載入版本 ${version} 的路線名稱...`);
-        nameSelector.innerHTML = '<option value="">載入中...</option>';
+    // 載入可用的 GPX 檔案列表
+    async function loadAvailableGPXFiles() {
+        console.log('掃描可用的 GPX 檔案...');
+        nameSelector.innerHTML = '<option value="">掃描中...</option>';
 
         try {
-            // 嘗試從 API 獲取切分路線列表
-            try {
-                const response = await fetch('http://localhost:5000/api/segment-routes');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.routes && data.routes.length > 0) {
-                        console.log('從 API 獲取切分路線列表成功:', data.routes);
-
-                        nameSelector.innerHTML = '<option value="">請選擇路線...</option>';
-                        data.routes.forEach(routeName => {
-                            const option = document.createElement('option');
-                            option.value = routeName;
-                            option.textContent = routeName;
-                            nameSelector.appendChild(option);
-                        });
-                        console.log(`成功載入 ${data.routes.length} 個切分路線`);
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.log('切分路線 API 不可用，使用本地檢查方式:', error);
-            }
-
-            // 回退到本地檢查方式
-            const possibleRoutes = [
-                'mt_beidawu', 'mt_baiguda'
+            // 直接掃描修改好的gpx資料夾中的檔案
+            const possibleFiles = [
+                'hehuan_north_route_a.gpx',
+                'hehuan_north_west_route_a.gpx', 
+                'hehuan_north_west.gpx',
+                'hehuan_north.gpx',
+                'mt_baiguda_route_a.gpx',
+                'mt_baiguda.gpx',
+                'mt_beidawu_route_a.gpx',
+                'mt_beidawu.gpx',
+                'mt_jade_front_route_a.gpx',
+                'mt_jade_front.gpx',
+                'mt_jade_main_route_a.gpx',
+                'mt_jade_main.gpx',
+                'mt_jade_west_route_a.gpx',
+                'mt_jade_west_route_b.gpx'
             ];
-            const availableRoutes = [];
 
-            for (const routeName of possibleRoutes) {
-                const isAvailable = await checkRouteExists(version, routeName);
+            const availableGPXFiles = [];
+            for (const fileName of possibleFiles) {
+                const fullPath = `../修改好的gpx/${fileName}`;
+                const isAvailable = await checkGPXFileExists(fullPath);
                 if (isAvailable) {
-                    availableRoutes.push(routeName);
-                    console.log(`發現路線: ${routeName}`);
+                    availableGPXFiles.push({
+                        name: fileName,
+                        full_path: fullPath,
+                        directory: ''
+                    });
                 }
             }
 
+            availableFiles = availableGPXFiles;
+            
             // 更新選擇器
-            nameSelector.innerHTML = '<option value="">請選擇路線...</option>';
-            availableRoutes.forEach(routeName => {
+            nameSelector.innerHTML = '<option value="">請選擇 GPX 檔案...</option>';
+            availableGPXFiles.forEach(fileInfo => {
                 const option = document.createElement('option');
-                option.value = routeName;
-                option.textContent = routeName;
+                option.value = fileInfo.full_path;
+                option.textContent = fileInfo.name.replace('.gpx', '');
                 nameSelector.appendChild(option);
             });
 
-            if (availableRoutes.length === 0) {
-                nameSelector.innerHTML = '<option value="">未找到可用路線</option>';
-                console.warn(`版本 ${version} 中沒有找到可用路線`);
+            if (availableGPXFiles.length === 0) {
+                nameSelector.innerHTML = '<option value="">未找到 GPX 檔案</option>';
+                console.warn('沒有找到可用的 GPX 檔案');
+            } else {
+                console.log(`成功載入 ${availableGPXFiles.length} 個 GPX 檔案`);
             }
 
         } catch (error) {
-            console.error('載入路線名稱失敗:', error);
+            console.error('載入 GPX 檔案列表失敗:', error);
             nameSelector.innerHTML = '<option value="">載入失敗</option>';
         }
     }
 
-    // 檢查路線是否存在
-    async function checkRouteExists(version, routeName) {
+    // 檢查 GPX 檔案是否存在
+    async function checkGPXFileExists(filePath) {
         try {
-            const testPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_part1.geojson`;
-
-            const response = await fetch(testPath, { method: 'HEAD' });
+            const response = await fetch(filePath, { method: 'HEAD' });
             return response.ok;
         } catch (error) {
-            console.log(`路線 ${routeName} 檢查失敗:`, error);
+            console.log(`GPX 檔案 ${filePath} 檢查失敗:`, error);
             return false;
         }
     }
 
-    // 載入段落編號列表
-    async function loadPartNumbers(version, routeName) {
-        console.log(`載入路線 ${routeName} 的段落編號...`);
-        partSelector.innerHTML = '<option value="">載入中...</option>';
-
-        try {
-            const availableParts = [];
-
-            // 從 part1 開始逐一檢查
-            for (let i = 1; i <= 10; i++) { // 假設最多10個段落
-                const partName = `part${i}`;
-                const testPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_${partName}.geojson`;
-
-                try {
-                    const response = await fetch(testPath, { method: 'HEAD' });
-                    if (response.ok) {
-                        availableParts.push(partName);
-                        console.log(`發現段落: ${partName}`);
-                    } else {
-                        break; // 假設段落是連續的，找不到就停止
-                    }
-                } catch (error) {
-                    break;
-                }
-            }
-
-            // 更新選擇器
-            partSelector.innerHTML = '<option value="">請選擇段落...</option>';
-            availableParts.forEach(partName => {
-                const option = document.createElement('option');
-                option.value = partName;
-                option.textContent = partName.replace('part', 'Part ');
-                partSelector.appendChild(option);
-            });
-
-            if (availableParts.length === 0) {
-                partSelector.innerHTML = '<option value="">未找到段落</option>';
-                console.warn(`路線 ${routeName} 沒有找到任何段落`);
-            }
-
-        } catch (error) {
-            console.error('載入段落編號失敗:', error);
-            partSelector.innerHTML = '<option value="">載入失敗</option>';
-        }
-    }
-
-    // 載入段落資料
-    async function loadSegmentData() {
-        const { version, routeName, partNumber } = currentData;
-        console.log(`載入段落資料: ${version}/${routeName}/${partNumber}`);
+    // 載入 GPX 資料
+    async function loadGPXData(filePath) {
+        console.log(`載入 GPX 檔案: ${filePath}`);
 
         try {
             showLoading();
 
-            const geojsonPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_${partNumber}.geojson`;
-            const txtPath = `../路線切分/${version}/txt/${routeName}/${routeName}_切分好的_${version}_${partNumber}_points.txt`;
+            const response = await fetch(filePath);
 
-            // 並行載入 GeoJSON 和 TXT 資料
-            const [geojsonResponse, txtResponse] = await Promise.all([
-                fetch(geojsonPath),
-                fetch(txtPath)
-            ]);
-
-            if (!geojsonResponse.ok) {
-                throw new Error(`無法載入 GeoJSON: ${geojsonResponse.status}`);
+            if (!response.ok) {
+                throw new Error(`無法載入 GPX 檔案: ${response.status}`);
             }
 
-            const rawGeojsonText = await geojsonResponse.text();
-            // 修正 JSON 中的 NaN 值
-            const cleanedGeojsonText = rawGeojsonText.replace(/"name":\s*NaN/g, '"name": null');
-            currentData.geojsonData = JSON.parse(cleanedGeojsonText);
+            const gpxText = await response.text();
+            currentData.gpxData = gpxText;
+            currentData.parsedData = parseGPX(gpxText);
 
-            if (txtResponse.ok) {
-                currentData.txtData = await txtResponse.text();
-            } else {
-                console.warn('TXT 檔案載入失敗，僅顯示 GeoJSON 資料');
-                currentData.txtData = null;
-            }
+            console.log('GPX 解析結果:', currentData.parsedData);
 
             // 渲染資料
             renderMapData();
-            renderSegmentInfo();
+            renderGPXInfo();
             renderDataTable();
 
             hideLoading();
 
         } catch (error) {
-            console.error('載入段落資料失敗:', error);
+            console.error('載入 GPX 檔案失敗:', error);
             showError(`載入失敗: ${error.message}`);
         }
     }
@@ -254,64 +222,55 @@ document.addEventListener('DOMContentLoaded', () => {
         routeLayer.clearLayers();
         pointsLayer.clearLayers();
 
-        if (!currentData.geojsonData) return;
+        if (!currentData.parsedData) return;
 
         console.log('渲染地圖資料...');
 
-        const { geojsonData } = currentData;
+        const { tracks, waypoints } = currentData.parsedData;
         let bounds = null;
 
-        // 渲染 GeoJSON 資料
-        geojsonData.features.forEach(feature => {
-            if (feature.geometry.type === 'LineString') {
-                // 路線
-                const line = L.geoJSON(feature, {
-                    style: {
-                        color: '#007bff',
-                        weight: 4,
-                        opacity: 0.8
-                    }
+        // 渲染軌跡
+        tracks.forEach((track, trackIndex) => {
+            if (track.length > 1) {
+                // 創建軌跡線
+                const latlngs = track.map(point => [point.lat, point.lon]);
+                const polyline = L.polyline(latlngs, {
+                    color: '#007bff',
+                    weight: 4,
+                    opacity: 0.8
                 });
-                routeLayer.addLayer(line);
+                routeLayer.addLayer(polyline);
 
                 if (!bounds) {
-                    bounds = line.getBounds();
+                    bounds = polyline.getBounds();
                 } else {
-                    bounds.extend(line.getBounds());
+                    bounds.extend(polyline.getBounds());
                 }
-            } else if (feature.geometry.type === 'Point') {
-                // 點位
-                const coords = feature.geometry.coordinates;
-                const latlng = L.latLng(coords[1], coords[0]);
+            }
 
-                // 根據點位類型設定顏色
-                let color = '#6c757d';
-                if (feature.properties.type === 'comm') {
-                    color = '#dc3545'; // 紅色：通訊點
-                } else if (feature.properties.type === 'gpx') {
-                    color = '#28a745'; // 綠色：GPX 點
-                }
+            // 渲染軌跡點
+            track.forEach((point, pointIndex) => {
+                const latlng = L.latLng(point.lat, point.lon);
 
                 const marker = L.circleMarker(latlng, {
-                    radius: 6,
-                    fillColor: color,
+                    radius: 4,
+                    fillColor: '#28a745', // 綠色：軌跡點
                     color: '#fff',
-                    weight: 2,
+                    weight: 1,
                     opacity: 1,
-                    fillOpacity: 0.8
+                    fillOpacity: 0.7
                 });
 
                 // 設定 popup
-                let popupContent = `<strong>順序:</strong> ${feature.properties.order}<br>`;
-                if (feature.properties.name && feature.properties.name !== 'NaN') {
-                    popupContent += `<strong>名稱:</strong> ${feature.properties.name}<br>`;
+                let popupContent = `<strong>軌跡點:</strong> ${point.order}<br>`;
+                if (point.name) {
+                    popupContent += `<strong>名稱:</strong> ${point.name}<br>`;
                 }
-                popupContent += `<strong>類型:</strong> ${feature.properties.type}<br>`;
-                if (feature.properties.elevation) {
-                    popupContent += `<strong>海拔:</strong> ${feature.properties.elevation}m<br>`;
+                if (point.elevation) {
+                    popupContent += `<strong>海拔:</strong> ${point.elevation.toFixed(1)}m<br>`;
                 }
-                if (feature.properties.time) {
-                    const time = new Date(feature.properties.time).toLocaleString();
+                if (point.time) {
+                    const time = new Date(point.time).toLocaleString();
                     popupContent += `<strong>時間:</strong> ${time}`;
                 }
 
@@ -323,6 +282,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     bounds.extend(latlng);
                 }
+            });
+        });
+
+        // 渲染航點
+        waypoints.forEach((waypoint, index) => {
+            const latlng = L.latLng(waypoint.lat, waypoint.lon);
+
+            const marker = L.circleMarker(latlng, {
+                radius: 8,
+                fillColor: '#dc3545', // 紅色：航點
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            });
+
+            // 設定 popup
+            let popupContent = `<strong>航點:</strong> ${index + 1}<br>`;
+            if (waypoint.name) {
+                popupContent += `<strong>名稱:</strong> ${waypoint.name}<br>`;
+            }
+            if (waypoint.description) {
+                popupContent += `<strong>描述:</strong> ${waypoint.description}<br>`;
+            }
+            if (waypoint.elevation) {
+                popupContent += `<strong>海拔:</strong> ${waypoint.elevation.toFixed(1)}m`;
+            }
+
+            marker.bindPopup(popupContent);
+            pointsLayer.addLayer(marker);
+
+            if (!bounds) {
+                bounds = L.latLngBounds([latlng]);
+            } else {
+                bounds.extend(latlng);
             }
         });
 
@@ -332,53 +326,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 渲染段落資訊
-    function renderSegmentInfo() {
-        if (!currentData.geojsonData) return;
+    // 渲染 GPX 資訊
+    function renderGPXInfo() {
+        if (!currentData.parsedData) return;
 
-        const { geojsonData, version, routeName, partNumber } = currentData;
+        const { tracks, waypoints } = currentData.parsedData;
+        const { fileName } = currentData;
 
         // 統計資訊
-        const lineFeatures = geojsonData.features.filter(f => f.geometry.type === 'LineString');
-        const pointFeatures = geojsonData.features.filter(f => f.geometry.type === 'Point');
-        const commPoints = pointFeatures.filter(f => f.properties.type === 'comm');
-        const gpxPoints = pointFeatures.filter(f => f.properties.type === 'gpx');
+        let totalTrackPoints = 0;
+        tracks.forEach(track => totalTrackPoints += track.length);
 
-        // 從第一個 LineString 的 properties 獲取詳細資訊
-        const routeInfo = lineFeatures.length > 0 ? lineFeatures[0].properties : {};
+        // 計算海拔範圍
+        let minElevation = null;
+        let maxElevation = null;
+        tracks.forEach(track => {
+            track.forEach(point => {
+                if (point.elevation) {
+                    if (minElevation === null || point.elevation < minElevation) {
+                        minElevation = point.elevation;
+                    }
+                    if (maxElevation === null || point.elevation > maxElevation) {
+                        maxElevation = point.elevation;
+                    }
+                }
+            });
+        });
 
         const infoHTML = `
             <div class="stat-item">
-                <span class="stat-label">路線版本:</span>
-                <span class="stat-value">${version.replace('route_', 'Route ').toUpperCase()}</span>
+                <span class="stat-label">檔案名稱:</span>
+                <span class="stat-value">${fileName}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">路線名稱:</span>
-                <span class="stat-value">${routeName}</span>
+                <span class="stat-label">軌跡數量:</span>
+                <span class="stat-value">${tracks.length}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">段落編號:</span>
-                <span class="stat-value">${partNumber.replace('part', 'Part ')}</span>
+                <span class="stat-label">軌跡點數:</span>
+                <span class="stat-value">${totalTrackPoints}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">起始點:</span>
-                <span class="stat-value">${routeInfo.start_point || 'N/A'}</span>
+                <span class="stat-label">航點數量:</span>
+                <span class="stat-value">${waypoints.length}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">結束點:</span>
-                <span class="stat-value">${routeInfo.end_point || 'N/A'}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">總點位數:</span>
-                <span class="stat-value">${pointFeatures.length}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">通訊點:</span>
-                <span class="stat-value">${commPoints.length}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">GPX 點:</span>
-                <span class="stat-value">${gpxPoints.length}</span>
+                <span class="stat-label">海拔範圍:</span>
+                <span class="stat-value">${minElevation !== null && maxElevation !== null ? 
+                    `${minElevation.toFixed(0)}m - ${maxElevation.toFixed(0)}m` : 'N/A'}</span>
             </div>
         `;
 
@@ -391,31 +386,49 @@ document.addEventListener('DOMContentLoaded', () => {
             dataTable.destroy();
         }
 
-        if (!currentData.geojsonData) return;
+        if (!currentData.parsedData) return;
 
-        const pointFeatures = currentData.geojsonData.features.filter(f => f.geometry.type === 'Point');
+        const { tracks, waypoints } = currentData.parsedData;
+        const allPoints = [];
 
-        const tableData = pointFeatures.map(feature => {
-            const coords = feature.geometry.coordinates;
-            const props = feature.properties;
+        // 收集所有軌跡點
+        tracks.forEach((track, trackIndex) => {
+            track.forEach(point => {
+                allPoints.push({
+                    ...point,
+                    type: 'track',
+                    trackIndex: trackIndex
+                });
+            });
+        });
 
+        // 收集所有航點
+        waypoints.forEach((waypoint, waypointIndex) => {
+            allPoints.push({
+                ...waypoint,
+                type: 'waypoint',
+                order: waypointIndex + 1
+            });
+        });
+
+        const tableData = allPoints.map(point => {
             // 處理時間格式
             let timeDisplay = 'N/A';
-            if (props.time) {
+            if (point.time) {
                 try {
-                    timeDisplay = new Date(props.time).toLocaleString();
+                    timeDisplay = new Date(point.time).toLocaleString();
                 } catch (e) {
-                    timeDisplay = props.time;
+                    timeDisplay = point.time;
                 }
             }
 
             return [
-                props.order || 'N/A',
-                coords[1].toFixed(6), // 緯度
-                coords[0].toFixed(6), // 經度
-                props.elevation || 'N/A',
-                props.type || 'N/A',
-                (props.name && props.name !== 'NaN') ? props.name : 'N/A',
+                point.order || 'N/A',
+                point.lat.toFixed(6), // 緯度
+                point.lon.toFixed(6), // 經度
+                point.elevation ? point.elevation.toFixed(1) : 'N/A',
+                point.type === 'track' ? '軌跡點' : '航點',
+                point.name || 'N/A',
                 timeDisplay
             ];
         });
@@ -445,10 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 表格行點擊事件
         $('#point-table tbody').on('click', 'tr', function () {
             const rowIndex = dataTable.row(this).index();
-            if (rowIndex >= 0 && rowIndex < pointFeatures.length) {
-                const feature = pointFeatures[rowIndex];
-                const coords = feature.geometry.coordinates;
-                const latlng = L.latLng(coords[1], coords[0]);
+            if (rowIndex >= 0 && rowIndex < allPoints.length) {
+                const point = allPoints[rowIndex];
+                const latlng = L.latLng(point.lat, point.lon);
 
                 map.flyTo(latlng, 16);
 
@@ -462,30 +474,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 重置選擇器
-    function resetSelectors() {
-        nameSelector.innerHTML = '<option value="">請先選擇版本...</option>';
-        nameSelector.disabled = true;
-        resetPartSelector();
-    }
-
-    function resetPartSelector() {
-        partSelector.innerHTML = '<option value="">請先選擇路線...</option>';
-        partSelector.disabled = true;
-    }
-
     // 清空顯示
     function clearDisplay() {
         routeLayer.clearLayers();
         pointsLayer.clearLayers();
-        segmentDetails.innerHTML = '<p>請選擇要檢視的路線段落</p>';
+        segmentDetails.innerHTML = '<p>請選擇要檢視的 GPX 檔案</p>';
 
         if (dataTable) {
             dataTable.clear().draw();
         }
 
-        currentData.geojsonData = null;
-        currentData.txtData = null;
+        currentData.fileName = '';
+        currentData.gpxData = null;
+        currentData.parsedData = null;
     }
 
     // 顯示載入狀態
@@ -503,5 +504,5 @@ document.addEventListener('DOMContentLoaded', () => {
         segmentDetails.innerHTML = `<div class="error">${message}</div>`;
     }
 
-    console.log('路線切分瀏覽工具初始化完成');
+    console.log('GPX 檔案瀏覽工具初始化完成');
 });

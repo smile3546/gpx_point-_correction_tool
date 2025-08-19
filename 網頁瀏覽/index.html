@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>路線切分瀏覽工具</title>
+    <title>GPX 檔案瀏覽工具</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="style.css">
@@ -12,28 +12,12 @@
 
 <body>
     <header>
-        <h1>路線切分瀏覽工具</h1>
+        <h1>GPX 檔案瀏覽工具</h1>
         <div class="route-selectors">
             <div class="selector-group">
-                <label for="route-version">路線版本：</label>
-                <select id="route-version">
-                    <option value="">請選擇版本...</option>
-                    <option value="route_a">Route A</option>
-                    <option value="route_b">Route B</option>
-                </select>
-            </div>
-
-            <div class="selector-group">
-                <label for="route-name">路線名稱：</label>
-                <select id="route-name" disabled>
-                    <option value="">請先選擇版本...</option>
-                </select>
-            </div>
-
-            <div class="selector-group">
-                <label for="route-part">路線段落：</label>
-                <select id="route-part" disabled>
-                    <option value="">請先選擇路線...</option>
+                <label for="route-name">GPX 檔案：</label>
+                <select id="route-name">
+                    <option value="">掃描中...</option>
                 </select>
             </div>
         </div>
@@ -43,9 +27,9 @@
         <div id="map"></div>
         <div id="info-panel">
             <div id="segment-info">
-                <h2>段落資訊</h2>
+                <h2>檔案資訊</h2>
                 <div id="segment-details">
-                    <p>請選擇要檢視的路線段落</p>
+                    <p>請選擇要檢視的 GPX 檔案</p>
                 </div>
             </div>
 
