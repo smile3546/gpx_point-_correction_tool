@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     if (data.success && data.routes && data.routes.length > 0) {
                         console.log('從 API 獲取切分路線列表成功:', data.routes);
-                        
+
                         nameSelector.innerHTML = '<option value="">請選擇路線...</option>';
                         data.routes.forEach(routeName => {
                             const option = document.createElement('option');
@@ -111,9 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 回退到本地檢查方式
             const possibleRoutes = [
-                'mt_beidawu', 'mt_baiguda', '北大武山', '白姑大山',
-                'chiyou_pintian', 'tao', 'tao_kalaye', 'tao_waterfall',
-                'a_test', 'b_test'
+                'mt_beidawu', 'mt_baiguda'
             ];
             const availableRoutes = [];
 
@@ -148,8 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 檢查路線是否存在
     async function checkRouteExists(version, routeName) {
         try {
-            const encodedRouteName = encodeURIComponent(routeName);
-            const testPath = `/路線切分/${version}/geojson/${encodedRouteName}/${encodedRouteName}_切分好的_${version}_part1.geojson`;
+            const testPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_part1.geojson`;
 
             const response = await fetch(testPath, { method: 'HEAD' });
             return response.ok;
@@ -166,12 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const availableParts = [];
-            const encodedRouteName = encodeURIComponent(routeName);
 
             // 從 part1 開始逐一檢查
             for (let i = 1; i <= 10; i++) { // 假設最多10個段落
                 const partName = `part${i}`;
-                const testPath = `/路線切分/${version}/geojson/${encodedRouteName}/${encodedRouteName}_切分好的_${version}_${partName}.geojson`;
+                const testPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_${partName}.geojson`;
 
                 try {
                     const response = await fetch(testPath, { method: 'HEAD' });
@@ -214,9 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             showLoading();
 
-            const encodedRouteName = encodeURIComponent(routeName);
-            const geojsonPath = `/路線切分/${version}/geojson/${encodedRouteName}/${encodedRouteName}_切分好的_${version}_${partNumber}.geojson`;
-            const txtPath = `/路線切分/${version}/txt/${encodedRouteName}/${encodedRouteName}_切分好的_${version}_${partNumber}_points.txt`;
+            const geojsonPath = `../路線切分/${version}/geojson/${routeName}/${routeName}_切分好的_${version}_${partNumber}.geojson`;
+            const txtPath = `../路線切分/${version}/txt/${routeName}/${routeName}_切分好的_${version}_${partNumber}_points.txt`;
 
             // 並行載入 GeoJSON 和 TXT 資料
             const [geojsonResponse, txtResponse] = await Promise.all([

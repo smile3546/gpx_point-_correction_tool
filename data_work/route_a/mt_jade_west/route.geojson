@@ -2395,17 +2395,33 @@
             23.47239
           ],
           [
-            120.934205,
-            23.472426
+            120.934058,
+            23.47221
+          ],
+          [
+            120.933988,
+            23.472133
+          ],
+          [
+            120.93387,
+            23.471954
+          ],
+          [
+            120.93384,
+            23.471937
+          ],
+          [
+            120.933839,
+            23.471935
           ]
         ]
       },
       "properties": {
         "name": "mt_jade_west_路線A",
         "route_type": "main_route",
-        "total_points": 598,
+        "total_points": 602,
         "comm_points": 6,
-        "gpx_points": 592
+        "gpx_points": 596
       }
     },
     {
@@ -12562,16 +12578,84 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          120.934205,
-          23.472426
+          120.934058,
+          23.47221
         ]
       },
       "properties": {
-        "order": "598(peak)",
+        "order": 598,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3447.6,
+        "time": "2023-06-15T23:15:53+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.933988,
+          23.472133
+        ]
+      },
+      "properties": {
+        "order": 599,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3450.1,
+        "time": "2023-06-15T23:16:31+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.93387,
+          23.471954
+        ]
+      },
+      "properties": {
+        "order": 600,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3454.3,
+        "time": "2023-06-15T23:17:10+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.93384,
+          23.471937
+        ]
+      },
+      "properties": {
+        "order": "601(peak)",
         "type": "comm",
         "name": "peak",
-        "elevation": 3439.7,
-        "time": "2023-06-15T23:15:14+00:00"
+        "elevation": 3456.0070557502513,
+        "time": "2023-06-15T23:17:46.986207922+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.933839,
+          23.471935
+        ]
+      },
+      "properties": {
+        "order": 602,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3456.1,
+        "time": "2023-06-15T23:17:49+00:00"
       }
     }
   ]
