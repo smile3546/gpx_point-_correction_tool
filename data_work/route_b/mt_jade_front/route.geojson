@@ -1085,14 +1085,18 @@
           [
             120.90021080811101,
             23.475783351667005
+          ],
+          [
+            120.90017,
+            23.475793
           ]
         ]
       },
       "properties": {
         "name": "mt_jade_front_路線B",
         "route_type": "main_route",
-        "total_points": 270,
-        "comm_points": 3,
+        "total_points": 271,
+        "comm_points": 4,
         "gpx_points": 267
       }
     },
@@ -5682,6 +5686,23 @@
         "order": 270,
         "type": "gpx",
         "name": null,
+        "elevation": 2603.3356452928856,
+        "time": "2020-10-31T07:57:07+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.90017,
+          23.475793
+        ]
+      },
+      "properties": {
+        "order": "271(start)",
+        "type": "comm",
+        "name": "start",
         "elevation": 2603.3356452928856,
         "time": "2020-10-31T07:57:07+00:00"
       }

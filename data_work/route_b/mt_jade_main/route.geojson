@@ -895,6 +895,10 @@
             23.475776
           ],
           [
+            120.90017,
+            23.475793
+          ],
+          [
             120.899952,
             23.475788
           ],
@@ -907,8 +911,8 @@
       "properties": {
         "name": "mt_jade_main_路線B",
         "route_type": "main_route",
-        "total_points": 224,
-        "comm_points": 5,
+        "total_points": 225,
+        "comm_points": 6,
         "gpx_points": 219
       }
     },
@@ -4691,12 +4695,29 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          120.90017,
+          23.475793
+        ]
+      },
+      "properties": {
+        "order": "223(start)",
+        "type": "comm",
+        "name": "start",
+        "elevation": 2622.9,
+        "time": "2021-09-07T05:18:26+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           120.899952,
           23.475788
         ]
       },
       "properties": {
-        "order": 223,
+        "order": 224,
         "type": "gpx",
         "name": null,
         "elevation": 2615.0,
@@ -4713,7 +4734,7 @@
         ]
       },
       "properties": {
-        "order": 224,
+        "order": 225,
         "type": "gpx",
         "name": null,
         "elevation": 2612.1,

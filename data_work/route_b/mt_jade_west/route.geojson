@@ -2083,12 +2083,12 @@
             23.471042
           ],
           [
-            120.912785,
-            23.471058
-          ],
-          [
             120.9127,
             23.47109
+          ],
+          [
+            120.912785,
+            23.471058
           ],
           [
             120.912624,
@@ -2509,14 +2509,18 @@
           [
             120.900195,
             23.475792
+          ],
+          [
+            120.90017,
+            23.475793
           ]
         ]
       },
       "properties": {
         "name": "mt_jade_west_路線B",
         "route_type": "main_route",
-        "total_points": 626,
-        "comm_points": 5,
+        "total_points": 627,
+        "comm_points": 6,
         "gpx_points": 621
       }
     },
@@ -11348,14 +11352,14 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          120.912785,
-          23.471058
+          120.9127,
+          23.47109
         ]
       },
       "properties": {
-        "order": 520,
-        "type": "gpx",
-        "name": null,
+        "order": "520(comm)",
+        "type": "comm",
+        "name": "comm",
         "elevation": 2841.4,
         "time": "2023-06-16T03:55:38+00:00"
       }
@@ -11365,14 +11369,14 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          120.9127,
-          23.47109
+          120.912785,
+          23.471058
         ]
       },
       "properties": {
-        "order": "521(comm)",
-        "type": "comm",
-        "name": "comm",
+        "order": 521,
+        "type": "gpx",
+        "name": null,
         "elevation": 2841.4,
         "time": "2023-06-16T03:55:38+00:00"
       }
@@ -13158,6 +13162,23 @@
         "order": 626,
         "type": "gpx",
         "name": null,
+        "elevation": 2620.8,
+        "time": "2023-06-16T04:58:08+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.90017,
+          23.475793
+        ]
+      },
+      "properties": {
+        "order": "627(start)",
+        "type": "comm",
+        "name": "start",
         "elevation": 2620.8,
         "time": "2023-06-16T04:58:08+00:00"
       }
