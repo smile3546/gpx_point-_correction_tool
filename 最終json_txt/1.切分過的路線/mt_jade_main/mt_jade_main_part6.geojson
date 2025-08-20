@@ -1,0 +1,501 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.95727,
+            23.470018
+          ],
+          [
+            120.956944,
+            23.470105
+          ],
+          [
+            120.956832,
+            23.470145
+          ],
+          [
+            120.956811,
+            23.470025
+          ],
+          [
+            120.956675,
+            23.470104
+          ],
+          [
+            120.956426,
+            23.470445
+          ],
+          [
+            120.956039,
+            23.470446
+          ],
+          [
+            120.956212,
+            23.470021
+          ],
+          [
+            120.95606,
+            23.469877
+          ],
+          [
+            120.956178,
+            23.469579
+          ],
+          [
+            120.956063,
+            23.46958
+          ],
+          [
+            120.956065,
+            23.469239
+          ],
+          [
+            120.955843,
+            23.469454
+          ],
+          [
+            120.955558,
+            23.469389
+          ],
+          [
+            120.955645,
+            23.469269
+          ],
+          [
+            120.955548,
+            23.469238
+          ],
+          [
+            120.954482,
+            23.469345
+          ],
+          [
+            120.955219,
+            23.468661
+          ],
+          [
+            120.954098,
+            23.46889
+          ],
+          [
+            120.954909,
+            23.468099
+          ],
+          [
+            120.954034,
+            23.468166
+          ],
+          [
+            120.954193,
+            23.467809
+          ],
+          [
+            120.954591,
+            23.467474
+          ],
+          [
+            120.95425,
+            23.467393
+          ]
+        ]
+      },
+      "properties": {
+        "name": "mt_jade_main_part6",
+        "route_type": "roundtrip_segment",
+        "part_number": 6,
+        "start_point": "peak",
+        "end_point": "cabin",
+        "total_points": 24
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.95727,
+          23.470018
+        ]
+      },
+      "properties": {
+        "order": 169,
+        "type": "comm",
+        "name": "peak",
+        "elevation": 3833.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956944,
+          23.470105
+        ]
+      },
+      "properties": {
+        "order": 170,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3833.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956832,
+          23.470145
+        ]
+      },
+      "properties": {
+        "order": 171,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3831.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956811,
+          23.470025
+        ]
+      },
+      "properties": {
+        "order": 172,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3828.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956675,
+          23.470104
+        ]
+      },
+      "properties": {
+        "order": 173,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3825.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956426,
+          23.470445
+        ]
+      },
+      "properties": {
+        "order": 174,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3804.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956039,
+          23.470446
+        ]
+      },
+      "properties": {
+        "order": 175,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3769.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956212,
+          23.470021
+        ]
+      },
+      "properties": {
+        "order": 176,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3778.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.95606,
+          23.469877
+        ]
+      },
+      "properties": {
+        "order": 177,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3773.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956178,
+          23.469579
+        ]
+      },
+      "properties": {
+        "order": 178,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3770.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956063,
+          23.46958
+        ]
+      },
+      "properties": {
+        "order": 179,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3768.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.956065,
+          23.469239
+        ]
+      },
+      "properties": {
+        "order": 180,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3763.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.955843,
+          23.469454
+        ]
+      },
+      "properties": {
+        "order": 181,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3755.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.955558,
+          23.469389
+        ]
+      },
+      "properties": {
+        "order": 182,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3750.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.955645,
+          23.469269
+        ]
+      },
+      "properties": {
+        "order": 183,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3749.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.955548,
+          23.469238
+        ]
+      },
+      "properties": {
+        "order": 184,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3748.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954482,
+          23.469345
+        ]
+      },
+      "properties": {
+        "order": 185,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3739.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.955219,
+          23.468661
+        ]
+      },
+      "properties": {
+        "order": 186,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3729.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954098,
+          23.46889
+        ]
+      },
+      "properties": {
+        "order": 187,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3703.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954909,
+          23.468099
+        ]
+      },
+      "properties": {
+        "order": 188,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3666.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954034,
+          23.468166
+        ]
+      },
+      "properties": {
+        "order": 189,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3645.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954193,
+          23.467809
+        ]
+      },
+      "properties": {
+        "order": 190,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3637.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.954591,
+          23.467474
+        ]
+      },
+      "properties": {
+        "order": 191,
+        "type": "gpx",
+        "name": NaN,
+        "elevation": 3630.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.95425,
+          23.467393
+        ]
+      },
+      "properties": {
+        "order": 192,
+        "type": "comm",
+        "name": "comm",
+        "elevation": 3629.9
+      }
+    }
+  ]
+}

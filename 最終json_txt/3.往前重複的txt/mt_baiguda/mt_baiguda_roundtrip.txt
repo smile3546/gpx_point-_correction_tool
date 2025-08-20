@@ -1,0 +1,10 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_baiguda	start	24.181664	121.169158	
+2	mt_baiguda	comm	24.18721	121.16254	
+3	mt_baiguda	comm	24.18554	121.1477	
+4	mt_baiguda	comm	24.1969	121.1381	
+5	mt_baiguda	peak	24.202724	121.108951	
+6	mt_baiguda	comm	24.1969	121.1381	
+7	mt_baiguda	comm	24.18554	121.1477	
+8	mt_baiguda	comm	24.18721	121.16254	
+9	mt_baiguda	start	24.181664	121.169158	

@@ -1,0 +1,12 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_beidawu	start	22.615088	120.702209	
+2	mt_beidawu	comm	22.6245	120.7145	
+3	mt_beidawu	comm	22.61635	120.72656	
+4	mt_beidawu	cabin	22.615284	120.7422	
+5	mt_beidawu	comm	22.61425	120.7478	
+6	mt_beidawu	peak	22.62707	120.761374	
+7	mt_beidawu	comm	22.61425	120.7478	
+8	mt_beidawu	cabin	22.615284	120.7422	
+9	mt_beidawu	comm	22.61635	120.72656	
+10	mt_beidawu	comm	22.6245	120.7145	
+11	mt_beidawu	start	22.615088	120.702209	

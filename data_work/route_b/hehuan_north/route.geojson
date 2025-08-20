@@ -7,20 +7,16 @@
         "type": "LineString",
         "coordinates": [
           [
+            121.281672,
+            24.181509
+          ],
+          [
             121.2817,
             24.1815
           ],
           [
             121.28214,
             24.18172
-          ],
-          [
-            121.282233,
-            24.181631
-          ],
-          [
-            121.282533,
-            24.181675
           ],
           [
             121.282842,
@@ -45,6 +41,10 @@
           [
             121.285901,
             24.176735
+          ],
+          [
+            121.285928,
+            24.176059
           ],
           [
             121.286699,
@@ -117,11 +117,28 @@
         ]
       },
       "properties": {
-        "name": "hehuan_north_route_b",
+        "name": "hehuan_north_路線B",
         "route_type": "main_route",
         "total_points": 27,
         "comm_points": 3,
         "gpx_points": 24
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.281672,
+          24.181509
+        ]
+      },
+      "properties": {
+        "order": 1,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3374.5,
+        "time": "2021-09-07T00:00:21+00:00"
       }
     },
     {
@@ -134,7 +151,7 @@
         ]
       },
       "properties": {
-        "order": "1",
+        "order": "2(comm)",
         "type": "comm",
         "name": "comm",
         "elevation": 3374.585935364266,
@@ -151,45 +168,11 @@
         ]
       },
       "properties": {
-        "order": "2",
+        "order": 3,
         "type": "gpx",
         "name": null,
-        "elevation": 3376,
+        "elevation": 3376.0,
         "time": "2021-09-07T00:03:37+00:00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.282233,
-          24.181631
-        ]
-      },
-      "properties": {
-        "order": "3",
-        "type": "gpx",
-        "name": "",
-        "elevation": null,
-        "id": "new_1755602392206"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.282533,
-          24.181675
-        ]
-      },
-      "properties": {
-        "order": "4",
-        "type": "gpx",
-        "name": "",
-        "elevation": null,
-        "id": "new_1755602398524"
       }
     },
     {
@@ -202,10 +185,10 @@
         ]
       },
       "properties": {
-        "order": "5",
+        "order": 4,
         "type": "gpx",
         "name": null,
-        "elevation": 3376,
+        "elevation": 3376.0,
         "time": "2021-09-07T00:08:00+00:00"
       }
     },
@@ -219,10 +202,10 @@
         ]
       },
       "properties": {
-        "order": "6",
+        "order": 5,
         "type": "gpx",
         "name": null,
-        "elevation": 3369,
+        "elevation": 3369.0,
         "time": "2021-09-07T00:11:50+00:00"
       }
     },
@@ -236,7 +219,7 @@
         ]
       },
       "properties": {
-        "order": "7",
+        "order": 6,
         "type": "gpx",
         "name": null,
         "elevation": 3358.2,
@@ -253,7 +236,7 @@
         ]
       },
       "properties": {
-        "order": "8",
+        "order": 7,
         "type": "gpx",
         "name": null,
         "elevation": 3340.9,
@@ -270,7 +253,7 @@
         ]
       },
       "properties": {
-        "order": "9",
+        "order": 8,
         "type": "gpx",
         "name": null,
         "elevation": 3324.4,
@@ -287,11 +270,28 @@
         ]
       },
       "properties": {
-        "order": "10",
+        "order": 9,
         "type": "gpx",
         "name": null,
         "elevation": 3316.6,
         "time": "2021-09-07T00:23:51+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.285928,
+          24.176059
+        ]
+      },
+      "properties": {
+        "order": 10,
+        "type": "gpx",
+        "name": null,
+        "elevation": 3306.5,
+        "time": "2021-09-07T00:26:02+00:00"
       }
     },
     {
@@ -304,7 +304,7 @@
         ]
       },
       "properties": {
-        "order": "11",
+        "order": 11,
         "type": "gpx",
         "name": null,
         "elevation": 3285.2,
@@ -321,7 +321,7 @@
         ]
       },
       "properties": {
-        "order": "12",
+        "order": 12,
         "type": "gpx",
         "name": null,
         "elevation": 3280.4,
@@ -338,7 +338,7 @@
         ]
       },
       "properties": {
-        "order": "13",
+        "order": 13,
         "type": "gpx",
         "name": null,
         "elevation": 3248.9,
@@ -355,7 +355,7 @@
         ]
       },
       "properties": {
-        "order": "14",
+        "order": "14(comm)",
         "type": "comm",
         "name": "comm",
         "elevation": 3248.9,
@@ -372,7 +372,7 @@
         ]
       },
       "properties": {
-        "order": "15",
+        "order": 15,
         "type": "gpx",
         "name": null,
         "elevation": 3234.1,
@@ -389,7 +389,7 @@
         ]
       },
       "properties": {
-        "order": "16",
+        "order": 16,
         "type": "gpx",
         "name": null,
         "elevation": 3151.9,
@@ -406,7 +406,7 @@
         ]
       },
       "properties": {
-        "order": "17",
+        "order": 17,
         "type": "gpx",
         "name": null,
         "elevation": 3139.8,
@@ -423,7 +423,7 @@
         ]
       },
       "properties": {
-        "order": "18",
+        "order": 18,
         "type": "gpx",
         "name": null,
         "elevation": 3138.4,
@@ -440,7 +440,7 @@
         ]
       },
       "properties": {
-        "order": "19",
+        "order": 19,
         "type": "gpx",
         "name": null,
         "elevation": 3115.3,
@@ -457,7 +457,7 @@
         ]
       },
       "properties": {
-        "order": "20",
+        "order": 20,
         "type": "gpx",
         "name": null,
         "elevation": 3102.1,
@@ -474,7 +474,7 @@
         ]
       },
       "properties": {
-        "order": "21",
+        "order": 21,
         "type": "gpx",
         "name": null,
         "elevation": 3092.3,
@@ -491,7 +491,7 @@
         ]
       },
       "properties": {
-        "order": "22",
+        "order": 22,
         "type": "gpx",
         "name": null,
         "elevation": 3079.8,
@@ -508,7 +508,7 @@
         ]
       },
       "properties": {
-        "order": "23",
+        "order": 23,
         "type": "gpx",
         "name": null,
         "elevation": 3052.3,
@@ -525,7 +525,7 @@
         ]
       },
       "properties": {
-        "order": "24",
+        "order": 24,
         "type": "gpx",
         "name": null,
         "elevation": 3031.5,
@@ -542,7 +542,7 @@
         ]
       },
       "properties": {
-        "order": "25",
+        "order": 25,
         "type": "gpx",
         "name": null,
         "elevation": 3018.1,
@@ -559,10 +559,10 @@
         ]
       },
       "properties": {
-        "order": "26",
+        "order": 26,
         "type": "gpx",
         "name": null,
-        "elevation": 2986,
+        "elevation": 2986.0,
         "time": "2021-09-07T01:08:35+00:00"
       }
     },
@@ -576,10 +576,10 @@
         ]
       },
       "properties": {
-        "order": "27",
+        "order": "27(start)",
         "type": "comm",
         "name": "start",
-        "elevation": 2986,
+        "elevation": 2986.0,
         "time": "2021-09-07T01:08:35+00:00"
       }
     }

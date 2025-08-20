@@ -1,0 +1,10 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	hehuan_north_west	start	24.16565	121.28934	
+2	hehuan_north_west	comm	24.1731	121.2875	
+3	hehuan_north_west	comm	24.1815	121.2817	
+4	hehuan_north_west		24.1783	121.2634	
+5	hehuan_north_west	peak	24.177656	121.244575	
+6	hehuan_north_west		24.1783	121.2634	
+7	hehuan_north_west	comm	24.1815	121.2817	
+8	hehuan_north_west	comm	24.1731	121.2875	
+9	hehuan_north_west	start	24.16565	121.28934	

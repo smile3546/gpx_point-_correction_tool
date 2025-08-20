@@ -1,0 +1,12 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_jade_main	start	23.475793	120.90017	
+2	mt_jade_main	comm	23.471086	120.91269	
+3	mt_jade_main	comm	23.470603	120.91801	
+4	mt_jade_main	comm	23.467393	120.95425	
+5	mt_jade_main	cabin	23.466506	120.94971	
+6	mt_jade_main	peak	23.470018	120.95727	
+7	mt_jade_main	cabin	23.466506	120.94971	
+8	mt_jade_main	comm	23.467393	120.95425	
+9	mt_jade_main	comm	23.470603	120.91801	
+10	mt_jade_main	comm	23.471086	120.91269	
+11	mt_jade_main	start	23.475793	120.90017	
