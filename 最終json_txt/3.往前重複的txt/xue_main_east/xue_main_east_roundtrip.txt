@@ -1,0 +1,10 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	xue_main_east	start	24.38584	121.29893	
+2	xue_main_east	comm	24.385335	121.29468	
+3	xue_main_east	comm	24.389562	121.28027	
+4	xue_main_east	peak	24.388687	121.272073	
+5	xue_main_east		24.383319	121.23187	
+6	xue_main_east	peak	24.388687	121.272073	
+7	xue_main_east	comm	24.389562	121.28027	
+8	xue_main_east	comm	24.385335	121.29468	
+9	xue_main_east	start	24.38584	121.29893	

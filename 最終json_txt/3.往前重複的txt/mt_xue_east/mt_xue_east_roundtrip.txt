@@ -1,0 +1,8 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_xue_east	start	24.38584	121.29893	
+2	mt_xue_east	comm	24.385335	121.29468	
+3	mt_xue_east	comm	24.389562	121.28027	
+4	mt_xue_east	peak	24.388687	121.272073	
+5	mt_xue_east	comm	24.389562	121.28027	
+6	mt_xue_east	comm	24.385335	121.29468	
+7	mt_xue_east	start	24.38584	121.29893	
