@@ -1,0 +1,8 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_junda	start	23.596061	120.946761	
+2	mt_junda	comm	23.594081	120.944324	
+3	mt_junda	comm	23.58753	120.95738	
+4	mt_junda	peak	23.57739	120.96249	
+5	mt_junda	comm	23.58753	120.95738	
+6	mt_junda	comm	23.594081	120.944324	
+7	mt_junda	start	23.596061	120.946761	
