@@ -1,0 +1,4 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_guanshangling	start	23.26419	120.96146	
+2	mt_guanshangling	peak	23.270966	120.959487	
+3	mt_guanshangling	start	23.26419	120.96146	

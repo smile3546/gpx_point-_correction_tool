@@ -16,13 +16,16 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     """計算兩點間的地理距離（公尺），使用 Haversine 公式"""
     # 轉換為弧度
     lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
-    
+
     # Haversine 公式
     dlat = lat2 - lat1
     dlon = lon2 - lon1
-    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    )
     c = 2 * math.asin(math.sqrt(a))
-    
+
     # 地球半徑（公尺）
     earth_radius = 6371000
     return earth_radius * c
@@ -31,113 +34,118 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 def interpolate_missing_data(points):
     """對缺少時間和高度的點位進行插值"""
     from datetime import datetime, timedelta
-    
+
     # 處理時間插值
     for i in range(len(points)):
-        if not points[i].get('time'):
+        if not points[i].get("time"):
             # 找前一個有時間的點
             prev_idx = i - 1
-            while prev_idx >= 0 and not points[prev_idx].get('time'):
+            while prev_idx >= 0 and not points[prev_idx].get("time"):
                 prev_idx -= 1
-            
+
             # 找後一個有時間的點
             next_idx = i + 1
-            while next_idx < len(points) and not points[next_idx].get('time'):
+            while next_idx < len(points) and not points[next_idx].get("time"):
                 next_idx += 1
-            
+
             # 如果前後都有時間，進行插值
             if prev_idx >= 0 and next_idx < len(points):
                 prev_point = points[prev_idx]
                 next_point = points[next_idx]
-                
+
                 # 計算累積距離
                 total_distance = 0
                 current_distance = 0
-                
+
                 for j in range(prev_idx, next_idx):
                     dist = calculate_distance(
-                        points[j]['lat'], points[j]['lon'],
-                        points[j+1]['lat'], points[j+1]['lon']
+                        points[j]["lat"],
+                        points[j]["lon"],
+                        points[j + 1]["lat"],
+                        points[j + 1]["lon"],
                     )
                     total_distance += dist
                     if j < i:
                         current_distance += dist
-                
+
                 # 時間插值
                 if total_distance > 0:
                     ratio = current_distance / total_distance
-                    prev_time = datetime.fromisoformat(prev_point['time'].replace('Z', '+00:00'))
-                    next_time = datetime.fromisoformat(next_point['time'].replace('Z', '+00:00'))
+                    prev_time = datetime.fromisoformat(
+                        prev_point["time"].replace("Z", "+00:00")
+                    )
+                    next_time = datetime.fromisoformat(
+                        next_point["time"].replace("Z", "+00:00")
+                    )
                     time_diff = next_time - prev_time
                     interpolated_time = prev_time + time_diff * ratio
-                    points[i]['time'] = interpolated_time.isoformat().replace('+00:00', 'Z')
-    
+                    points[i]["time"] = interpolated_time.isoformat().replace(
+                        "+00:00", "Z"
+                    )
+
     # 處理高度插值
     for i in range(len(points)):
-        if not points[i].get('elevation'):
+        if not points[i].get("elevation"):
             # 找前一個有高度的點
             prev_idx = i - 1
-            while prev_idx >= 0 and not points[prev_idx].get('elevation'):
+            while prev_idx >= 0 and not points[prev_idx].get("elevation"):
                 prev_idx -= 1
-            
+
             # 找後一個有高度的點
             next_idx = i + 1
-            while next_idx < len(points) and not points[next_idx].get('elevation'):
+            while next_idx < len(points) and not points[next_idx].get("elevation"):
                 next_idx += 1
-            
+
             # 如果前後都有高度，進行插值
             if prev_idx >= 0 and next_idx < len(points):
                 prev_point = points[prev_idx]
                 next_point = points[next_idx]
-                
+
                 # 計算累積距離
                 total_distance = 0
                 current_distance = 0
-                
+
                 for j in range(prev_idx, next_idx):
                     dist = calculate_distance(
-                        points[j]['lat'], points[j]['lon'],
-                        points[j+1]['lat'], points[j+1]['lon']
+                        points[j]["lat"],
+                        points[j]["lon"],
+                        points[j + 1]["lat"],
+                        points[j + 1]["lon"],
                     )
                     total_distance += dist
                     if j < i:
                         current_distance += dist
-                
+
                 # 高度插值
                 if total_distance > 0:
                     ratio = current_distance / total_distance
-                    prev_ele = float(prev_point['elevation'])
-                    next_ele = float(next_point['elevation'])
+                    prev_ele = float(prev_point["elevation"])
+                    next_ele = float(next_point["elevation"])
                     interpolated_ele = prev_ele + (next_ele - prev_ele) * ratio
-                    points[i]['elevation'] = round(interpolated_ele, 1)
-    
+                    points[i]["elevation"] = round(interpolated_ele, 1)
+
     return points
 
 
-def scan_data_work():
-    """掃描 data_work 資料夾，取得所有 route.geojson 檔案"""
-    data_work_path = Path("data_work")
-    print(f"  -> 掃描路徑: {data_work_path.absolute()}")
+def scan_txt_geojson():
+    """掃描 已改好的txt_geojson 資料夾，取得所有 route.geojson 檔案"""
+    data_path = Path("已改好的txt_geojson")
+    print(f"  -> 掃描路徑: {data_path.absolute()}")
     geojson_files = []
 
-    # 掃描 route_a 和 route_b
-    for route_type in ["route_a", "route_b"]:
-        route_path = data_work_path / route_type
-
-        # 掃描每個路線資料夾
-        for route_dir in route_path.iterdir():
-            if route_dir.is_dir():
-                geojson_file = route_dir / "route.geojson"
-                if geojson_file.exists():
-                    route_name = route_dir.name
-                    geojson_files.append(
-                        {
-                            "file_path": geojson_file,
-                            "route_name": route_name,
-                            "route_type": route_type,
-                            "output_name": f"{route_name}_{route_type}.gpx",
-                        }
-                    )
+    # 掃描每個路線資料夾
+    for route_dir in data_path.iterdir():
+        if route_dir.is_dir():
+            geojson_file = route_dir / "route.geojson"
+            if geojson_file.exists():
+                route_name = route_dir.name
+                geojson_files.append(
+                    {
+                        "file_path": geojson_file,
+                        "route_name": route_name,
+                        "output_name": f"{route_name}.gpx",
+                    }
+                )
 
     return geojson_files
 
@@ -251,12 +259,12 @@ def main():
     output_dir.mkdir(exist_ok=True)
 
     # 掃描所有 GeoJSON 檔案
-    geojson_files = scan_data_work()
+    geojson_files = scan_txt_geojson()
     print(f"  -> 找到 {len(geojson_files)} 個路線檔案")
 
     # 處理每個檔案
     for file_info in geojson_files:
-        print(f"  -> 處理 {file_info['route_name']}_{file_info['route_type']}...")
+        print(f"  -> 處理 {file_info['route_name']}...")
 
         # 讀取 GeoJSON
         with open(file_info["file_path"], "r", encoding="utf-8") as f:

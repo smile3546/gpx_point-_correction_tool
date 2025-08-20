@@ -37,7 +37,7 @@
     <type>comm</type>
   </wpt>
   <trk>
-    <name>mt_jade_main_route_b</name>
+    <name>mt_jade_main</name>
     <trkseg>
       <trkpt lat="23.475793" lon="120.90017">
         <ele>2602.579057264148</ele>

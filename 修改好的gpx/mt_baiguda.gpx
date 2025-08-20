@@ -31,7 +31,7 @@
     <type>comm</type>
   </wpt>
   <trk>
-    <name>mt_baiguda_route_b</name>
+    <name>mt_baiguda</name>
     <trkseg>
       <trkpt lat="24.202724" lon="121.108951">
         <ele>3284.6</ele>

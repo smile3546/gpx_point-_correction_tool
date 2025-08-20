@@ -31,7 +31,7 @@
     <type>comm</type>
   </wpt>
   <trk>
-    <name>hehuan_north_west_route_b</name>
+    <name>hehuan_north_west</name>
     <trkseg>
       <trkpt lat="24.177656" lon="121.244575">
         <ele>3121.1</ele>

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兩座山 GPX 軌跡查看器</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .gpx-section {
+            margin: 20px;
+        }
+
+        .gpx-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            font-size: 1.2em;
+        }
+
+        .gpx-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .gpx-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gpx-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .gpx-item.selected {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .gpx-item.selected:hover {
+            background-color: #2980b9;
+        }
+
+        .gpx-name {
+            font-weight: 500;
+        }
+
+        .gpx-size {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn.danger {
+            background: #e74c3c;
+        }
+
+        .btn.danger:hover {
+            background: #c0392b;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .info-panel h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .track-info {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .color-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .search-container {
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .page-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .page-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .page-info {
+            font-size: 12px;
+            color: #666;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>兩座山 GPX 軌跡查看器</h1>
+        <p>關山嶺山 & 塔關山 登山軌跡視覺化工具</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="controls">
+                <button class="btn" onclick="showAllTracks()">顯示全部軌跡</button>
+                <button class="btn danger" onclick="clearAllTracks()">清除全部軌跡</button>
+                <button class="btn" onclick="showAllPOI()">顯示興趣點</button>
+                <button class="btn danger" onclick="hideAllPOI()">隱藏興趣點</button>
+            </div>
+
+            <div class="gpx-section">
+                <h3>關山嶺山 Guanshanling (<span id="guanshanling-count">載入中...</span>)</h3>
+                <div class="search-container">
+                    <input type="text" id="search-guanshanling" placeholder="搜尋檔案..." class="search-input">
+                </div>
+                <div id="loading-guanshanling" class="loading">
+                    <div class="spinner"></div>
+                    載入中...
+                </div>
+                <div id="guanshanling-list" class="gpx-list" style="display: none;"></div>
+                <div id="guanshanling-pagination" class="pagination" style="display: none;"></div>
+            </div>
+
+            <div class="gpx-section">
+                <h3>塔關山 Taguan (<span id="taguan-count">載入中...</span>)</h3>
+                <div class="search-container">
+                    <input type="text" id="search-taguan" placeholder="搜尋檔案..." class="search-input">
+                </div>
+                <div id="loading-taguan" class="loading">
+                    <div class="spinner"></div>
+                    載入中...
+                </div>
+                <div id="taguan-list" class="gpx-list" style="display: none;"></div>
+                <div id="taguan-pagination" class="pagination" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="info-panel">
+                <h4>軌跡資訊</h4>
+                <div id="track-info">請選擇 GPX 檔案來查看軌跡</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // 初始化地圖
+        const map = L.map('map').setView([23.3, 120.95], 12);
+
+        // 添加地圖圖層
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // 儲存已載入的軌跡
+        const loadedTracks = new Map();
+        const colors = [
+            '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+            '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#f1c40f',
+            '#d35400', '#8e44ad', '#27ae60', '#2980b9', '#c0392b'
+        ];
+        let colorIndex = 0;
+
+        // 興趣點資料
+        const pointsOfInterest = {
+            guanshanling: [
+                { name: '關山嶺山-起點', type: 'start', lat: 23.26419, lng: 120.96146 },
+                { name: '關山嶺山-三角點', type: 'peak', lat: 23.27093, lng: 120.95943 }
+            ],
+            taguan: [
+                { name: '塔關山-起點', type: 'start', lat: 23.26642, lng: 120.93936 },
+                { name: '塔關山-訊號點', type: 'comm', lat: 23.25805, lng: 120.93954 },
+                { name: '塔關山-三角點', type: 'peak', lat: 23.2519, lng: 120.94119 }
+            ]
+        };
+
+        // 儲存興趣點標記
+        const poiMarkers = new Map();
+
+        // 創建興趣點標記的圖標
+        function createPOIIcon(type) {
+            const iconColors = {
+                start: '#28a745',   // 綠色 - 起點
+                peak: '#dc3545',    // 紅色 - 三角點
+                comm: '#ffc107'     // 黃色 - 訊號點
+            };
+
+            return L.divIcon({
+                className: 'poi-marker',
+                html: `<div style="
+                    background-color: ${iconColors[type] || '#6c757d'};
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    border: 2px solid white;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                "></div>`,
+                iconSize: [16, 16],
+                iconAnchor: [8, 8]
+            });
+        }
+
+        // 顯示興趣點
+        function showPOI(mountain) {
+            const points = pointsOfInterest[mountain];
+            if (!points) return;
+
+            points.forEach(point => {
+                const markerId = `${mountain}_${point.name}`;
+
+                if (!poiMarkers.has(markerId)) {
+                    const marker = L.marker([point.lat, point.lng], {
+                        icon: createPOIIcon(point.type)
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <div style="text-align: center;">
+                            <strong>${point.name}</strong><br>
+                            <small>類型: ${point.type === 'start' ? '起點' : point.type === 'peak' ? '三角點' : '訊號點'}</small><br>
+                            <small>座標: ${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}</small>
+                        </div>
+                    `);
+
+                    poiMarkers.set(markerId, marker);
+                }
+            });
+        }
+
+        // 隱藏興趣點
+        function hidePOI(mountain) {
+            const points = pointsOfInterest[mountain];
+            if (!points) return;
+
+            points.forEach(point => {
+                const markerId = `${mountain}_${point.name}`;
+                const marker = poiMarkers.get(markerId);
+                if (marker) {
+                    map.removeLayer(marker);
+                    poiMarkers.delete(markerId);
+                }
+            });
+        }
+
+        // 動態檢測檔案是否存在
+        async function checkFileExists(folderName, filename) {
+            try {
+                const response = await fetch(`${folderName}/${filename}`, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // 動態載入實際存在的檔案列表
+        async function loadFileList(mountain) {
+            const folderName = mountain === 'guanshanling' ? 'Guanshanling_processed_gpx' : 'Taguan_processed_gpx';
+            const files = [];
+
+            // 更新載入狀態
+            const countElement = document.getElementById(`${mountain}-count`);
+            countElement.textContent = '掃描中...';
+
+            if (mountain === 'guanshanling') {
+                // 檢查 HN_Guanshanling 檔案 (1-500)
+                for (let i = 1; i <= 500; i++) {
+                    const number = i.toString().padStart(4, '0');
+                    const filename = `HN_Guanshanling_${number}.gpx`;
+
+                    if (await checkFileExists(folderName, filename)) {
+                        files.push(filename);
+                    }
+
+                    // 每檢查10個檔案就更新一次進度
+                    if (i % 10 === 0) {
+                        countElement.textContent = `掃描中... ${files.length} 個檔案 (檢查到 ${i}/500)`;
+                        await new Promise(resolve => setTimeout(resolve, 10)); // 短暫暫停避免阻塞UI
+                    }
+                }
+            } else {
+                // 檢查 HB_Taguan 檔案 (1-50)
+                for (let i = 1; i <= 50; i++) {
+                    const number = i.toString().padStart(4, '0');
+                    const filename = `HB_Taguan_${number}.gpx`;
+
+                    if (await checkFileExists(folderName, filename)) {
+                        files.push(filename);
+                    }
+
+                    if (i % 5 === 0) {
+                        countElement.textContent = `掃描中... ${files.length} 個檔案 (HB檢查到 ${i}/50)`;
+                        await new Promise(resolve => setTimeout(resolve, 5));
+                    }
+                }
+
+                // 檢查 HN_Taguan 檔案 (1-400)
+                for (let i = 1; i <= 400; i++) {
+                    const number = i.toString().padStart(4, '0');
+                    const filename = `HN_Taguan_${number}.gpx`;
+
+                    if (await checkFileExists(folderName, filename)) {
+                        files.push(filename);
+                    }
+
+                    if (i % 10 === 0) {
+                        countElement.textContent = `掃描中... ${files.length} 個檔案 (HN檢查到 ${i}/400)`;
+                        await new Promise(resolve => setTimeout(resolve, 5));
+                    }
+                }
+            }
+
+            // 完成掃描，更新最終數量
+            countElement.textContent = `${files.length} files`;
+
+            return files;
+        }
+
+        // 解析 GPX 檔案
+        function parseGPX(gpxContent) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(gpxContent, 'text/xml');
+            const trackPoints = xmlDoc.getElementsByTagName('trkpt');
+            const points = [];
+
+            for (let i = 0; i < trackPoints.length; i++) {
+                const point = trackPoints[i];
+                const lat = parseFloat(point.getAttribute('lat'));
+                const lon = parseFloat(point.getAttribute('lon'));
+                const eleElement = point.getElementsByTagName('ele')[0];
+                const timeElement = point.getElementsByTagName('time')[0];
+
+                points.push({
+                    lat: lat,
+                    lng: lon,
+                    elevation: eleElement ? parseFloat(eleElement.textContent) : null,
+                    time: timeElement ? timeElement.textContent : null
+                });
+            }
+
+            return points;
+        }
+
+        // 載入並顯示 GPX 軌跡
+        async function loadGPXTrack(mountain, filename) {
+            const trackId = `${mountain}_${filename}`;
+
+            if (loadedTracks.has(trackId)) {
+                return; // 已經載入過了
+            }
+
+            try {
+                const response = await fetch(`${mountain}_processed_gpx/${filename}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const gpxContent = await response.text();
+                const points = parseGPX(gpxContent);
+
+                if (points.length === 0) {
+                    throw new Error('No track points found');
+                }
+
+                const color = colors[colorIndex % colors.length];
+                colorIndex++;
+
+                const polyline = L.polyline(points.map(p => [p.lat, p.lng]), {
+                    color: color,
+                    weight: 3,
+                    opacity: 0.8
+                }).addTo(map);
+
+                // 添加點擊事件顯示軌跡資訊
+                polyline.on('click', function (e) {
+                    showTrackInfo(trackId, points, color);
+                });
+
+                loadedTracks.set(trackId, {
+                    polyline: polyline,
+                    points: points,
+                    color: color,
+                    filename: filename,
+                    mountain: mountain
+                });
+
+                // 更新地圖視野
+                if (loadedTracks.size === 1) {
+                    map.fitBounds(polyline.getBounds());
+                }
+
+                updateTrackInfo();
+
+            } catch (error) {
+                console.error(`Error loading ${filename}:`, error);
+                // 不顯示 alert，只在 console 記錄錯誤
+                // 這樣可以避免不存在的檔案造成太多錯誤訊息
+            }
+        }
+
+        // 移除軌跡
+        function removeTrack(trackId) {
+            if (loadedTracks.has(trackId)) {
+                const track = loadedTracks.get(trackId);
+                map.removeLayer(track.polyline);
+                loadedTracks.delete(trackId);
+                updateTrackInfo();
+
+                // 更新所有頁面中的選中狀態
+                const mountain = track.mountain;
+                renderFileList(mountain);
+            }
+        }
+
+        // 顯示軌跡資訊
+        function showTrackInfo(trackId, points, color) {
+            const track = loadedTracks.get(trackId);
+            if (!track) return;
+
+            const totalDistance = calculateDistance(points);
+            const elevationGain = calculateElevationGain(points);
+            const duration = calculateDuration(points);
+
+            const infoHTML = `
+                <div class="track-info">
+                    <span class="color-indicator" style="background-color: ${color}"></span>
+                    <strong>${track.filename}</strong>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">${points.length}</div>
+                        <div class="stat-label">軌跡點</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${totalDistance.toFixed(1)} km</div>
+                        <div class="stat-label">總距離</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${elevationGain.toFixed(0)} m</div>
+                        <div class="stat-label">爬升</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${duration}</div>
+                        <div class="stat-label">時間</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('track-info').innerHTML = infoHTML;
+        }
+
+        // 更新軌跡資訊面板
+        function updateTrackInfo() {
+            const trackCount = loadedTracks.size;
+            if (trackCount === 0) {
+                document.getElementById('track-info').innerHTML = '請選擇 GPX 檔案來查看軌跡';
+                return;
+            }
+
+            let infoHTML = `<div style="margin-bottom: 10px;"><strong>已載入 ${trackCount} 條軌跡</strong></div>`;
+
+            loadedTracks.forEach((track, trackId) => {
+                infoHTML += `
+                    <div class="track-info">
+                        <span class="color-indicator" style="background-color: ${track.color}"></span>
+                        ${track.filename}
+                    </div>
+                `;
+            });
+
+            document.getElementById('track-info').innerHTML = infoHTML;
+        }
+
+        // 計算距離
+        function calculateDistance(points) {
+            let total = 0;
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i - 1];
+                const curr = points[i];
+                total += getDistanceFromLatLonInKm(prev.lat, prev.lng, curr.lat, curr.lng);
+            }
+            return total;
+        }
+
+        // 計算兩點間距離
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; // 地球半徑 km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        // 計算爬升
+        function calculateElevationGain(points) {
+            let gain = 0;
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i - 1];
+                const curr = points[i];
+                if (prev.elevation !== null && curr.elevation !== null) {
+                    const diff = curr.elevation - prev.elevation;
+                    if (diff > 0) gain += diff;
+                }
+            }
+            return gain;
+        }
+
+        // 計算時間
+        function calculateDuration(points) {
+            const firstPoint = points.find(p => p.time);
+            const lastPoint = points.slice().reverse().find(p => p.time);
+
+            if (!firstPoint || !lastPoint || !firstPoint.time || !lastPoint.time) {
+                return '未知';
+            }
+
+            const start = new Date(firstPoint.time);
+            const end = new Date(lastPoint.time);
+            const diffMs = end - start;
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            return `${hours}h ${minutes}m`;
+        }
+
+        // 分頁和搜尋狀態
+        const paginationState = {
+            guanshanling: { currentPage: 1, itemsPerPage: 20, filteredFiles: [] },
+            taguan: { currentPage: 1, itemsPerPage: 20, filteredFiles: [] }
+        };
+
+        // 建立檔案列表（支援搜尋和分頁）
+        async function createFileList(mountain) {
+            const files = await loadFileList(mountain);
+            const listElement = document.getElementById(`${mountain}-list`);
+            const loadingElement = document.getElementById(`loading-${mountain}`);
+            const paginationElement = document.getElementById(`${mountain}-pagination`);
+            const searchInput = document.getElementById(`search-${mountain}`);
+            const countElement = document.getElementById(`${mountain}-count`);
+
+            // 初始化過濾後的檔案列表
+            paginationState[mountain].filteredFiles = files;
+
+            // 搜尋功能
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                paginationState[mountain].filteredFiles = files.filter(filename =>
+                    filename.toLowerCase().includes(searchTerm)
+                );
+                paginationState[mountain].currentPage = 1;
+                renderFileList(mountain);
+                renderPagination(mountain);
+            });
+
+            renderFileList(mountain);
+            renderPagination(mountain);
+
+            loadingElement.style.display = 'none';
+            listElement.style.display = 'block';
+            paginationElement.style.display = 'block';
+        }
+
+        // 渲染檔案列表
+        function renderFileList(mountain) {
+            const listElement = document.getElementById(`${mountain}-list`);
+            const state = paginationState[mountain];
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+            const currentPageFiles = state.filteredFiles.slice(startIndex, endIndex);
+
+            listElement.innerHTML = '';
+
+            currentPageFiles.forEach(filename => {
+                const item = document.createElement('div');
+                item.className = 'gpx-item';
+                item.dataset.trackId = `${mountain}_${filename}`;
+
+                // 檢查是否已選擇
+                const trackId = `${mountain}_${filename}`;
+                if (loadedTracks.has(trackId)) {
+                    item.classList.add('selected');
+                }
+
+                item.innerHTML = `
+                    <div class="gpx-name">${filename}</div>
+                    <div class="gpx-size">GPX</div>
+                `;
+
+                item.addEventListener('click', function () {
+                    const trackId = this.dataset.trackId;
+
+                    if (this.classList.contains('selected')) {
+                        // 取消選擇，移除軌跡
+                        removeTrack(trackId);
+                    } else {
+                        // 選擇，載入軌跡
+                        this.classList.add('selected');
+                        loadGPXTrack(mountain, filename);
+                    }
+                });
+
+                listElement.appendChild(item);
+            });
+        }
+
+        // 渲染分頁
+        function renderPagination(mountain) {
+            const paginationElement = document.getElementById(`${mountain}-pagination`);
+            const state = paginationState[mountain];
+            const totalPages = Math.ceil(state.filteredFiles.length / state.itemsPerPage);
+
+            let paginationHTML = '';
+
+            // 上一頁按鈕
+            if (state.currentPage > 1) {
+                paginationHTML += `<button class="page-btn" onclick="goToPage('${mountain}', ${state.currentPage - 1})">上一頁</button>`;
+            }
+
+            // 頁碼按鈕
+            const startPage = Math.max(1, state.currentPage - 2);
+            const endPage = Math.min(totalPages, state.currentPage + 2);
+
+            if (startPage > 1) {
+                paginationHTML += `<button class="page-btn" onclick="goToPage('${mountain}', 1)">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += `<span class="page-info">...</span>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === state.currentPage ? 'active' : '';
+                paginationHTML += `<button class="page-btn ${activeClass}" onclick="goToPage('${mountain}', ${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<span class="page-info">...</span>`;
+                }
+                paginationHTML += `<button class="page-btn" onclick="goToPage('${mountain}', ${totalPages})">${totalPages}</button>`;
+            }
+
+            // 下一頁按鈕
+            if (state.currentPage < totalPages) {
+                paginationHTML += `<button class="page-btn" onclick="goToPage('${mountain}', ${state.currentPage + 1})">下一頁</button>`;
+            }
+
+            // 頁面資訊
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage + 1;
+            const endIndex = Math.min(state.currentPage * state.itemsPerPage, state.filteredFiles.length);
+            paginationHTML += `<div class="page-info">${startIndex}-${endIndex} / ${state.filteredFiles.length}</div>`;
+
+            paginationElement.innerHTML = paginationHTML;
+        }
+
+        // 跳轉到指定頁面
+        function goToPage(mountain, page) {
+            paginationState[mountain].currentPage = page;
+            renderFileList(mountain);
+            renderPagination(mountain);
+        }
+
+        // 顯示全部軌跡
+        function showAllTracks() {
+            document.querySelectorAll('.gpx-item').forEach(item => {
+                if (!item.classList.contains('selected')) {
+                    item.click();
+                }
+            });
+        }
+
+        // 清除全部軌跡
+        function clearAllTracks() {
+            document.querySelectorAll('.gpx-item.selected').forEach(item => {
+                item.click();
+            });
+        }
+
+        // 顯示所有興趣點
+        function showAllPOI() {
+            showPOI('guanshanling');
+            showPOI('taguan');
+        }
+
+        // 隱藏所有興趣點
+        function hideAllPOI() {
+            hidePOI('guanshanling');
+            hidePOI('taguan');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 顯示興趣點
+            showAllPOI();
+
+            // 建立檔案列表
+            await createFileList('guanshanling');
+            await createFileList('taguan');
+        });
+    </script>
+</body>
+
+</html>

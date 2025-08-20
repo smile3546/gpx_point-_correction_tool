@@ -1,0 +1,6 @@
+﻿順序	步道名稱	路標指示	緯度	經度	海拔（約）
+1	mt_taguan	start	23.26642	120.93936	
+2	mt_taguan	comm	23.25805	120.93954	
+3	mt_taguan	peak	23.2519	120.94119	
+4	mt_taguan	comm	23.25805	120.93954	
+5	mt_taguan	start	23.26642	120.93936	
